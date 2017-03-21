@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  h1= threadTitle
+  p= ownerSaid
+  hr
+  form(action='/thread/#{threadId}/comment', method="post")
+    div.input
+      | 您的代號 
+      input(type="text", name="nickname") 
+      br
+      | 想法與反饋
+      input(type="text", name="response", vaule="#{defaultResponse}") 
+      br
+      | 總體評量(10最好，0最差)
+      input(type="radio", name="rank", value="10")
+      | 10 
+      input(type="radio", name="rank", value="9")
+      | 9 
+      input(type="radio", name="rank", value="8")
+      | 8 
+      input(type="radio", name="rank", value="7")
+      | 7 
+      input(type="radio", name="rank", value="6")
+      | 6 
+      input(type="radio", name="rank", value="5")
+      | 5 
+      input(type="radio", name="rank", value="4")
+      | 4 
+      input(type="radio", name="rank", value="3")
+      | 3 
+      input(type="radio", name="rank", value="2")
+      | 2 
+      input(type="radio", name="rank", value="1")
+      | 1 
+    div.actions
+      input(type="submit", value="add")
+
+  p 歡迎來 #{title} ，你可以快速地建立一個表單來接收大家的回應，使用網址或是QRCode快速地傳遞給你的朋友們。
