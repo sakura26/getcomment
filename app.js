@@ -10,6 +10,8 @@ var bodyParser = require('body-parser');
 var mongodb = require('mongodb');
 var crypto = require('crypto');
 sanitize = require('mongo-sanitize');
+var nodemailer = require('nodemailer');
+
 
 // INIT
 //mongodbServer = new mongodb.Server('localhost', 27017, { auto_reconnect: true, poolSize: 10 });
@@ -23,10 +25,13 @@ mongoose.connect( 'mongodb://localhost/getcomment' );
 //db = mongoose.connection;
 //db.on('error', console.error.bind(console, 'connection error:'));
 siteTitle = "戳我！";
+siteHost = "http://192.168.28.158:3000/";
+siteEmail = "getcomment@anotherdream.tw";
 
 var routes = require('./routes/index');
-var comments = require('./routes/comment');
+//var comments = require('./routes/comment');
 var threads = require('./routes/thread');
+var transporter = require('./transporter.js');
 
 var app = express();
 
@@ -41,6 +46,13 @@ nov = function(data){  //not a value
         return true;
     return false;
 };
+transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'notify@ccsakura-net.com', // Your email id
+        pass: 'notifyMe' // Your password
+    }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,9 +66,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-//todo: 公開回應與否
 app.use('/thread', threads);
 app.use('/comment', comments);
+app.use('/maillll', comments);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
