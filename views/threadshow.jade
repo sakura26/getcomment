@@ -2,10 +2,11 @@ extends layout
 
 block content
   h1= title
+  p QRCode and tab for print here
   p #{ownerSaid}
   p 開始時間、目前回應數量
   hr
-  form(action='/thread/#{threadId}/comment', method="post")
+  form(action='/thread/#{_id}/comment', method="post")
     div.input
       | 您的代號 
       input(type="text", name="nickname") 
@@ -38,6 +39,19 @@ block content
       | 聯絡方式（選填）
       input(type="text", name="email")
     div.actions
-      input(type="submit", value="add")
+      input(type="submit", value="送出")
+
+  if (typeof(comments) != 'undefined')
+    h3 已經投稿的回覆
+    for com in comments
+      div.comment
+        p
+          if (typeof(com.email) == 'undefined')
+            a(href="mailto:com.email") com.nickname
+          else
+            #{com.nickname}
+          | 評分(滿分10)
+          com.rank
+        p= com.response
 
   p 歡迎來 #{siteTitle} ，你可以快速地建立一個表單來接收大家的回應，使用網址或是QRCode快速地傳遞給你的朋友們。

@@ -12,7 +12,7 @@ block content
     a(href="https://www.facebook.com/groups/homebrew.tw/permalink/1631843680166267/") 原討論串
   hr
   p 建立戳戳樂
-  form(action='/thread', method="post")
+  form(action='/thread/addThread', method="post")
     div.input
       | 主題 
       input(type="text", name="title") 
@@ -28,5 +28,8 @@ block content
       br
       | 你的Eamil(會寄送管理資訊給您) 
       input(type="text", name="email") 
+      br
+      | 是否公開顯示其他人的意見
+      input(type="checkbox", name="public", value="yes", checked) 
     div.actions
       input(type="submit", value="add")
