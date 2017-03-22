@@ -46,13 +46,7 @@ nov = function(data){  //not a value
         return true;
     return false;
 };
-transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: 'notify@ccsakura-net.com', // Your email id
-        pass: 'notifyMe' // Your password
-    }
-});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
