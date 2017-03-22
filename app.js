@@ -22,6 +22,7 @@ mongoose.Promise = require('bluebird');
 mongoose.connect( 'mongodb://localhost/getcomment' );
 //db = mongoose.connection;
 //db.on('error', console.error.bind(console, 'connection error:'));
+siteTitle = "戳我！";
 
 var routes = require('./routes/index');
 var comments = require('./routes/comment');
@@ -53,6 +54,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+//todo: 公開回應與否
 app.use('/thread', threads);
 app.use('/comment', comments);
 

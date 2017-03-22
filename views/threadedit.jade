@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1= title
+  p 修改回應串，如果有什麼寫錯了，可以在這裡編輯喔
+  hr
+  p 建立戳戳樂
+  form(action='/thread/#{_id}/update', method="post")
+    div.input
+      | 主題 
+      input(type="text", name="title" value="#{title}") 
+      br
+      | 你想說的話 
+      textarea(type="text", name="ownerSaid") #{ownerSaid}
+      br
+      | 回覆樣本
+      textarea(type="text", name="defaultResponse") #{defaultResponse}
+      br
+      | 標籤 
+      input(type="text", name="tags" value="#{tags}") 
+    div.actions
+      input(type="submit", value="update")

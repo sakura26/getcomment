@@ -1,8 +1,9 @@
 extends layout
 
 block content
-  h1= threadTitle
-  p= ownerSaid
+  h1= title
+  p #{ownerSaid}
+  p 開始時間、目前回應數量
   hr
   form(action='/thread/#{threadId}/comment', method="post")
     div.input
@@ -10,7 +11,7 @@ block content
       input(type="text", name="nickname") 
       br
       | 想法與反饋
-      textarea(type="text", name="response", value="#{defaultResponse}") 
+      textarea(type="text", name="response") #{defaultResponse}
       br
       | 總體評量(10最好，0最差)
       input(type="radio", name="rank", value="10")
@@ -33,7 +34,10 @@ block content
       | 2 
       input(type="radio", name="rank", value="1")
       | 1 
+      br
+      | 聯絡方式（選填）
+      input(type="text", name="email")
     div.actions
       input(type="submit", value="add")
 
-  p 歡迎來 #{title} ，你可以快速地建立一個表單來接收大家的回應，使用網址或是QRCode快速地傳遞給你的朋友們。
+  p 歡迎來 #{siteTitle} ，你可以快速地建立一個表單來接收大家的回應，使用網址或是QRCode快速地傳遞給你的朋友們。
