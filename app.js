@@ -25,7 +25,7 @@ mongoose.connect( 'mongodb://localhost/getcomment' );
 //db = mongoose.connection;
 //db.on('error', console.error.bind(console, 'connection error:'));
 siteTitle = "戳我！";
-siteHost = "http://192.168.28.158:3000/";
+siteHost = "http://192.168.28.158:3000";
 siteEmail = "getcomment@anotherdream.tw";
 
 var routes = require('./routes/index');
@@ -46,6 +46,11 @@ nov = function(data){  //not a value
         return true;
     return false;
 };
+genRandomString = function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+            .toString('hex') /** convert to hexadecimal format */
+            .slice(0,length);   /** return required number of characters */
+};
 
 
 // view engine setup
@@ -61,8 +66,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/thread', threads);
-app.use('/comment', comments);
-app.use('/maillll', comments);
+//app.use('/comment', comments);
+//app.use('/maillll', comments);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

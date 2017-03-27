@@ -14,6 +14,9 @@ block content
   p 建立戳戳樂
   form(action='/thread/addThread', method="post")
     div.input
+      | 暱稱
+      input(type="text", name="nickname") 
+      br
       | 主題 
       input(type="text", name="title") 
       br

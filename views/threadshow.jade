@@ -1,13 +1,24 @@
 extends layout
 
 block content
+  script.
+    //var date = new Date(#{created_at});
+    //var dateString = date.getFullYear()+"/"+date.getMonth()+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+    //document.getElementById("startDate").innerHTML = dateString;
+
   h1= title
-  p QRCode and tab for print here
-  p #{ownerSaid}
-  p 開始時間、目前回應數量
+  div(style="border-width:3px;border-style:dashed;border-color:#FFAC55;padding:5px;width:600px;min-height:190px;")
+    span(style="width:175px;float:left;") 
+      img(src="#{qrcode}")
+    span(style="display:inline;width:400px;")
+      h3= title
+      pre #{ownerSaid}
+      p= nickname
+      p 建立時間: #{created_at}
+  p(style="clear:left") 平均評分：#{avgRank}
   hr
   form(action='/thread/#{_id}/comment', method="post")
-    div.input
+    div(style="border-width:2px;border-style:solid;border-color:#FFAC55;padding:5px;").input
       | 您的代號 
       input(type="text", name="nickname") 
       br
@@ -41,17 +52,18 @@ block content
     div.actions
       input(type="submit", value="送出")
 
-  if (typeof(comments) != 'undefined')
+  if (typeof(comments) != 'undefined' && comments!=null)
     h3 已經投稿的回覆
     for com in comments
-      div.comment
+      div(style="border-width:2px;border-style:solid;border-color:#000000;padding:5px;").comment
         p
           if (typeof(com.email) == 'undefined')
             a(href="mailto:com.email") com.nickname
           else
-            #{com.nickname}
-          | 評分(滿分10)
+            | #{com.nickname}
+          | ：評分 #{com.rank} (滿分10)
           com.rank
-        p= com.response
+        p
+          pre= com.response
 
   p 歡迎來 #{siteTitle} ，你可以快速地建立一個表單來接收大家的回應，使用網址或是QRCode快速地傳遞給你的朋友們。
