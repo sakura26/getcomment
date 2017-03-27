@@ -18,7 +18,7 @@ block content
     span(style="display:inline; white-space: pre-line; word-break: break-all; width:400px;")
       b= title
       br
-      i #{nickname} 建立時間: #{created_at}
+      i by #{nickname}, #{created_at}
       br
       i= style
       br
@@ -80,7 +80,7 @@ block content
               | #{com.nickname}
             | ：Score #{com.score}
             if (com.scoreBJCP!=-1)
-            | / BJCP #{com.scoreBJCP}
+              | / BJCP #{com.scoreBJCP}
           p
             pre= com.response
       else
@@ -92,7 +92,7 @@ block content
               | #{com.nickname}
             | ：Score #{com.score}
             if (com.scoreBJCP!=-1)
-            | / BJCP #{com.scoreBJCP}
+              | / BJCP #{com.scoreBJCP}
           p
             pre= com.response
 

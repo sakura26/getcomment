@@ -410,9 +410,10 @@ router.post('/:id/comment', function(req, res) {
 	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
 	    return;
 	  }
+	  loglog("enter comment","DEBUG");
 	  //check bjcppass
-	  if (req.body.bjcppass)
 	  	BJCPer.findOne({bjcppass: req.body.bjcppass}, function(err, bjcper){ 
+	  		loglog("bjcper:"+bjcper,"DEBUG");
 	  		if(bjcper!=null){
 	  			var thiscomment = new Comment( {
 			  		threadId: xssFilters.inHTMLData(req.params.id), 
@@ -444,14 +445,16 @@ router.post('/:id/comment', function(req, res) {
 					//res.render('commentFail', data);
 				  	return;
 			    } 
+			    loglog("comment saved","DEBUG");
 			    //get comments and calc average rank
 			      var ress = [];
 			      var avgScore, avgScoreBJCP;
 				  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
 			  		var sum=0, bjcpsum=0, bjcpcount=0;
 			  		comments.forEach(function(ele){ sum+=ele.score; if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){bjcpcount++; bjcpsum+=ele.scoreBJCP;} });
-			  		qq.avgScore = sum/comments.length ;//calc average rank
-			  		qq.avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
+			  		avgScore = sum/comments.length ;//calc average rank
+			  		avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
+			  		loglog("score calc:"+avgScore,"DEBUG");
 			  		resolve();
 				  } ); }) );
 				  Promise.all(ress).then(function() {
