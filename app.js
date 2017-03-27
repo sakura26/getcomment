@@ -11,7 +11,7 @@ var mongodb = require('mongodb');
 var crypto = require('crypto');
 sanitize = require('mongo-sanitize');
 var nodemailer = require('nodemailer');
-
+xssFilters = require('xss-filters');
 
 // INIT
 //mongodbServer = new mongodb.Server('localhost', 27017, { auto_reconnect: true, poolSize: 10 });

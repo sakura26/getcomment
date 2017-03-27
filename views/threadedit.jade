@@ -7,16 +7,31 @@ block content
   p 建立戳戳樂
   form(action='/thread/#{_id}/update/#{pass}', method="post")
     div.input
-      | 主題 
+      | Nickname暱稱
+      input(type="text", name="nickname" value="#{nickname}") 
+      br
+      | Title主題 
       input(type="text", name="title" value="#{title}") 
       br
-      | 你想說的話 
-      textarea(type="text", name="ownerSaid") #{ownerSaid}
+      | message你想說的話 
+      textarea(type="text", name="ownerSaid")  #{ownerSaid}
       br
-      | 回覆樣本
+      | recipe酒譜
+      textarea(type="text", name="recipe")  #{recipe}
+      br
+      | style(BJCP)
+      input(type="text", name="style" value="#{style}") 
+      br
+      | image_url影像網址
+      input(type="text", name="image_url" value="#{image_url}") 
+      br
+      | ResponseTemplate回覆樣本
       textarea(type="text", name="defaultResponse") #{defaultResponse}
       br
-      | 標籤 
+      | Tags標籤 
       input(type="text", name="tags" value="#{tags}") 
+      br
+      | Public是否公開顯示其他人的意見
+      input(type="checkbox", name="public", value="yes", checked) 
     div.actions
       input(type="submit", value="update")

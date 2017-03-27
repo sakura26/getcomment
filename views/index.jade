@@ -14,25 +14,34 @@ block content
   p 建立戳戳樂
   form(action='/thread/addThread', method="post")
     div.input
-      | 暱稱
+      | Nickname暱稱
       input(type="text", name="nickname") 
       br
-      | 主題 
+      | Title主題 
       input(type="text", name="title") 
       br
-      | 你想說的話 
-      textarea(type="text", name="ownerSaid") 
+      | message你想說的話 
+      textarea(type="text", name="ownerSaid", style="width:600px;height:200px;") 
       br
-      | 回覆樣本
-      textarea(type="text", name="defaultResponse") 
+      | recipe酒譜
+      textarea(type="text", name="recipe", style="width:600px;height:200px;") 
       br
-      | 標籤 
+      | style(BJCP)
+      input(type="text", name="style") 
+      br
+      | image_url照片網址
+      input(type="text", name="image_url") 
+      br
+      | ResponseTemplate回覆樣本
+      textarea(type="text", name="defaultResponse", style="width:600px;height:200px;") 
+      br
+      | Tags標籤 
       input(type="text", name="tags") 
       br
       | 你的Eamil(會寄送管理資訊給您) 
       input(type="text", name="email") 
       br
-      | 是否公開顯示其他人的意見
+      | Public是否公開顯示其他人的意見
       input(type="checkbox", name="public", value="yes", checked) 
     div.actions
       input(type="submit", value="add")
