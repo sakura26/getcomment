@@ -83,7 +83,7 @@ router.get('/:id', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
 	  	//get comments
   		if (thisthread.public=='yes')  //show if public
@@ -112,9 +112,9 @@ createEmpty = function(req, res) {
 		pass: genRandomString(5)} );//mongoose.model('Thread');
 	thisthread.save(function (err, fluffy) {
 	  if (err) return console.error(err);
-	  var editurl = siteHost+'/'+thisthread._id+'/edit/'+thisthread.pass;
+	  var editurl = siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass;
 	  	QRCode.toDataURL(editurl,function(err, qrcode_edit){
-			QRCode.toDataURL(siteHost+'/'+thisthread._id+'/show',function(err, qrcode){
+			QRCode.toDataURL(siteHost+'/thread/'+thisthread._id+'/show',function(err, qrcode){
 				loglog("prelocateThread "+thisthread._id,"INFO");
 				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl});
 			});
@@ -236,7 +236,7 @@ router.get('/:id/show', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
 	  	//get comments
   		if (thisthread.public=='yes')  //show if public
@@ -273,7 +273,7 @@ router.get('/:id/printA4Detail', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  Promise.all(ress).then(function() {
 	  	loglog(JSON.stringify(qq));
 	  	res.render('printA4Detail', qq);
@@ -282,7 +282,7 @@ router.get('/:id/printA4Detail', function(req, res) {
 });
 router.get('/:id/printA4QRCode', function(req, res) {
 	//var qr;
-	QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){
+	QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){
 		///qr.qrcode = qrcode;
 		res.render('printA4QRCode', {qrcode: qrcode});
 	});
@@ -290,7 +290,7 @@ router.get('/:id/printA4QRCode', function(req, res) {
 
 router.get('/:id/qrcode', function(req, res) {
 	//TOOD: validate owner!
-	QRCode.toDataURL(siteHost+'/'+req.params.id+'/show', function (err, url) {
+	QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show', function (err, url) {
 	  //console.log(url)
 		//var string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
 		var string = url;
