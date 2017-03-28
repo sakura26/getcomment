@@ -63,6 +63,10 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
+	if (req.params.id=='createEmpty'){
+		createEmpty(req, res);
+		return;
+	}
 	var thisthread = new Thread();//mongoose.model('Thread');
 	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
 	  if (err){
@@ -79,7 +83,7 @@ router.get('/:id', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
 	  	//get comments
   		if (thisthread.public=='yes')  //show if public
@@ -98,12 +102,32 @@ router.get('/:id', function(req, res) {
 	});
 });
 
+createEmpty = function(req, res) {
+	//TODO: validate email!
+	//TODO: send notify email!
+	var thisthread = new Thread( {
+		public: 'pregen', 
+		title: 'This tag is not set yet~ ',
+		created_at: Date.now(),
+		pass: genRandomString(5)} );//mongoose.model('Thread');
+	thisthread.save(function (err, fluffy) {
+	  if (err) return console.error(err);
+	  var editurl = siteHost+'/'+thisthread._id+'/edit/'+thisthread.pass;
+	  	QRCode.toDataURL(editurl,function(err, qrcode_edit){
+			QRCode.toDataURL(siteHost+'/'+thisthread._id+'/show',function(err, qrcode){
+				loglog("prelocateThread "+thisthread._id,"INFO");
+				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl});
+			});
+		});
+	});
+}
+
 router.post('/', function(req, res) {
 	//TODO: validate email!
 	//TODO: send notify email!
 	var clearComment = xssFilters.inHTMLData(req.body.ownerSaid);
-	for (i = 0; i < 5; i++) 
-	    clearComment = clearComment.replace(/\n$/, '<br>');
+	//for (i = 0; i < 5; i++) 
+	//    clearComment = clearComment.replace(/\n$/, '<br>');
 	var WTF1=genRandomString(5);
 	var WTF2=Date.now();
 	var thisthread = new Thread( 
@@ -149,8 +173,8 @@ router.post('/addThread', function(req, res) {
 	//TODO: validate email!
 	//TODO: send notify email!
 	var clearComment = xssFilters.inHTMLData(req.body.ownerSaid);
-	for (i = 0; i < 5; i++) 
-	    clearComment = clearComment.replace(/\n$/, '<br>');
+	//for (i = 0; i < 5; i++) 
+	//    clearComment = clearComment.replace(/\n$/, '<br>');
 	var WTF1=genRandomString(5);
 	var WTF2=Date.now();
 	var thisthread = new Thread( {
@@ -212,7 +236,7 @@ router.get('/:id/show', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
 	  	//get comments
   		if (thisthread.public=='yes')  //show if public
@@ -249,7 +273,7 @@ router.get('/:id/printA4Detail', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  Promise.all(ress).then(function() {
 	  	loglog(JSON.stringify(qq));
 	  	res.render('printA4Detail', qq);
@@ -258,7 +282,7 @@ router.get('/:id/printA4Detail', function(req, res) {
 });
 router.get('/:id/printA4QRCode', function(req, res) {
 	//var qr;
-	QRCode.toDataURL(siteHost+req.params.id+'/show',function(err, qrcode){
+	QRCode.toDataURL(siteHost+'/'+req.params.id+'/show',function(err, qrcode){
 		///qr.qrcode = qrcode;
 		res.render('printA4QRCode', {qrcode: qrcode});
 	});
@@ -266,7 +290,7 @@ router.get('/:id/printA4QRCode', function(req, res) {
 
 router.get('/:id/qrcode', function(req, res) {
 	//TOOD: validate owner!
-	QRCode.toDataURL(siteHost+req.params.id+'/show', function (err, url) {
+	QRCode.toDataURL(siteHost+'/'+req.params.id+'/show', function (err, url) {
 	  //console.log(url)
 		//var string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
 		var string = url;
@@ -303,6 +327,7 @@ router.get('/:id/edit/:pass', function(req, res) {
 	  	res.end("password not match");
 	})
 });
+
 router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	//TOOD: validate owner!
 	loglog("updThread "+req.params.id,"INFO");
@@ -318,10 +343,20 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  	res.end("password not match");
 	  	return;
 	  }
+	  if (data.public=="pregen"){
+	  	data.created_at = Date.now();
+	  }
+	  data.updated_at = Date.now();
 	  data.title = req.body.title;
+	  data.nickname = req.body.nickname;
 	  data.ownerSaid = req.body.ownerSaid;
 	  data.tags = req.body.tags;
 	  data.defaultResponse = req.body.defaultResponse;
+	  data.public = req.body.public;
+	  data.email = req.body.email;
+	  data.image_url = req.body.image_url;
+	  data.style = req.body.style;
+	  data.recipe = req.body.recipe;
 	  //data.created_at = Date.now();
 	  data.save(function (err, updatedTank) {
 	    if (err) return loglog(err);
@@ -330,7 +365,7 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  res.redirect("/thread/"+req.params.id+"/show");
 	})
 });
-router.put('/:id', function(req, res) {
+router.put('/:id/:pass', function(req, res) {
 	//TOOD: validate owner!
 	loglog("updThread "+req.params.id,"INFO");
 
@@ -341,10 +376,24 @@ router.put('/:id', function(req, res) {
 	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
 	    return;
 	  } 
+	  if (req.params.pass != data.pass){
+	  	res.end("password not match");
+	  	return;
+	  }
+	  if (data.public=="pregen"){
+	  	data.created_at = Date.now();
+	  }
+	  data.updated_at = Date.now();
 	  data.title = req.body.title;
+	  data.nickname = req.body.nickname;
 	  data.ownerSaid = req.body.ownerSaid;
 	  data.tags = req.body.tags;
 	  data.defaultResponse = req.body.defaultResponse;
+	  data.public = req.body.public;
+	  data.email = req.body.email;
+	  data.image_url = req.body.image_url;
+	  data.style = req.body.style;
+	  data.recipe = req.body.recipe;
 	  //data.created_at = Date.now();
 	  data.save(function (err, updatedTank) {
 	    if (err) return loglog(err);
@@ -395,6 +444,7 @@ router.get('/:id/delete/:pass', function(req, res) {
 	  res.end("Thread removed");
 	})
 });
+
 
 router.post('/:id/comment', function(req, res) {
 	//TODO: validate email!

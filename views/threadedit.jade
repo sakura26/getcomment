@@ -10,14 +10,17 @@ block content
       | Nickname暱稱
       input(type="text", name="nickname" value="#{nickname}") 
       br
+      | Email通知信箱
+      input(type="text", name="email" value="#{email}") 
+      br
       | Title主題 
       input(type="text", name="title" value="#{title}") 
       br
       | message你想說的話 
-      textarea(type="text", name="ownerSaid")  #{ownerSaid}
+      textarea(type="text", name="ownerSaid", style="width:600px;height:200px;")  #{ownerSaid}
       br
       | recipe酒譜
-      textarea(type="text", name="recipe")  #{recipe}
+      textarea(type="text", name="recipe", style="width:600px;height:200px;")  #{recipe}
       br
       | style(BJCP)
       input(type="text", name="style" value="#{style}") 
@@ -26,7 +29,7 @@ block content
       input(type="text", name="image_url" value="#{image_url}") 
       br
       | ResponseTemplate回覆樣本
-      textarea(type="text", name="defaultResponse") #{defaultResponse}
+      textarea(type="text", name="defaultResponse", style="width:600px;height:200px;") #{defaultResponse}
       br
       | Tags標籤 
       input(type="text", name="tags" value="#{tags}") 
