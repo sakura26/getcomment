@@ -81,6 +81,7 @@ router.get('/:id', function(req, res) {
 	  }
 	  var qq = thisthread.toObject();
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  delete qq.pass;
 	  var ress = [];
 	  //gen QRCode
 	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
@@ -90,7 +91,14 @@ router.get('/:id', function(req, res) {
   			qq.comments = comments;
   		//calc avgRank
   		var sum=0, bjcpsum=0, bjcpcount=0;
-  		comments.forEach(function(ele){ sum+=ele.score; if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){bjcpcount++; bjcpsum+=ele.scoreBJCP;} });
+  		comments.forEach(function(ele){ 
+  			ele.bjcppass = "masked";
+  			sum+=ele.score; 
+  			if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){
+  				bjcpcount++; 
+  				bjcpsum+=ele.scoreBJCP;
+  			} 
+  		});
   		qq.avgScore = sum/comments.length ;//calc average rank
   		qq.avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
   		resolve();
@@ -234,6 +242,7 @@ router.get('/:id/show', function(req, res) {
 	  }
 	  var qq = thisthread.toObject();
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  delete qq.pass;
 	  var ress = [];
 	  //gen QRCode
 	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
@@ -243,7 +252,14 @@ router.get('/:id/show', function(req, res) {
   			qq.comments = comments;
   		//calc avgRank
   		var sum=0, bjcpsum=0, bjcpcount=0;
-  		comments.forEach(function(ele){ sum+=ele.score; if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){bjcpcount++; bjcpsum+=ele.scoreBJCP;} });
+  		comments.forEach(function(ele){ 
+  			ele.bjcppass = "masked";
+  			sum+=ele.score; 
+  			if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){
+  				bjcpcount++; 
+  				bjcpsum+=ele.scoreBJCP;
+  			} 
+  		});
   		qq.avgScore = sum/comments.length ;//calc average rank
   		qq.avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
   		resolve();
