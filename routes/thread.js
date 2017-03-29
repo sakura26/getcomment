@@ -121,10 +121,11 @@ createEmpty = function(req, res) {
 	thisthread.save(function (err, fluffy) {
 	  if (err) return console.error(err);
 	  var editurl = siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass;
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
 	  	QRCode.toDataURL(editurl,function(err, qrcode_edit){
-			QRCode.toDataURL(siteHost+'/thread/'+thisthread._id+'/show',function(err, qrcode){
+			QRCode.toDataURL(viewurl,function(err, qrcode){
 				loglog("prelocateThread "+thisthread._id,"INFO");
-				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl});
+				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl, url_show: viewurl});
 			});
 		});
 	});
@@ -265,7 +266,7 @@ router.get('/:id/show', function(req, res) {
   		resolve();
 	  } ); }) );
 	  Promise.all(ress).then(function() {
-	  	loglog(JSON.stringify(qq));
+	  	//loglog(JSON.stringify(qq));
 	  	res.render('threadshow', qq);
 	  });
 	});
@@ -289,9 +290,11 @@ router.get('/:id/printA4Detail', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var ress = [];
 	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(viewurl,function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
 	  Promise.all(ress).then(function() {
-	  	loglog(JSON.stringify(qq));
+	  	//loglog(JSON.stringify(qq));
 	  	res.render('printA4Detail', qq);
 	  });
 	});
@@ -476,10 +479,10 @@ router.post('/:id/comment', function(req, res) {
 	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
 	    return;
 	  }
-	  loglog("enter comment","DEBUG");
+	  //loglog("new comment","INFO");
 	  //check bjcppass
 	  	BJCPer.findOne({bjcppass: req.body.bjcppass}, function(err, bjcper){ 
-	  		loglog("bjcper:"+bjcper,"DEBUG");
+	  		//loglog("bjcper:"+bjcper,"DEBUG");
 	  		if(bjcper!=null){
 	  			var thiscomment = new Comment( {
 			  		threadId: xssFilters.inHTMLData(req.params.id), 
@@ -511,7 +514,7 @@ router.post('/:id/comment', function(req, res) {
 					//res.render('commentFail', data);
 				  	return;
 			    } 
-			    loglog("comment saved","DEBUG");
+			    //loglog("comment saved","DEBUG");
 			    //get comments and calc average rank
 			      var ress = [];
 			      var avgScore, avgScoreBJCP;
@@ -520,7 +523,7 @@ router.post('/:id/comment', function(req, res) {
 			  		comments.forEach(function(ele){ sum+=ele.score; if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){bjcpcount++; bjcpsum+=ele.scoreBJCP;} });
 			  		avgScore = sum/comments.length ;//calc average rank
 			  		avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
-			  		loglog("score calc:"+avgScore,"DEBUG");
+			  		//loglog("score calc:"+avgScore,"DEBUG");
 			  		resolve();
 				  } ); }) );
 				  Promise.all(ress).then(function() {

@@ -7,9 +7,11 @@ html
       div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
         img(src="#{qrcode_edit}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
-          b 這是管理用的標籤，酒發出去之前要記得先上來填寫說明，別不小心貼出去囉
-          br
-          p= url_edit
+          p
+            b 這是管理用的標籤，酒發出去之前要記得先上來填寫說明，別不小心貼出去囉
+          p 列印時要留意是否防水，免得酒冰完字都糊掉了
+          p 編輯網址 #{url_edit}
+          p 評分網址 #{url_show}
       img(src="#{qrcode}")
       img(src="#{qrcode}")
       img(src="#{qrcode}")
