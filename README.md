@@ -22,6 +22,7 @@ PR Welcome!!
 * 用戶可針對該酒撰寫感想與評分
 * 加強顯示的BJCP評審評語
 * 允許自定回應格式
+* ibon列印
 
 ## Install
 
@@ -49,6 +50,15 @@ RUN npm install xss-filters --save
 /etc/init.d/mongodb start
 bash /root/getcomment/watchdog.sh
 RUN echo "* * * * * root bash /root/getcomment/watchdog.sh" >> /etc/crontab
+
+# install PDF generator https://wkhtmltopdf.org/
+RUN wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+RUN tar Jxf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+RUN sudo mv wkhtmltox /opt
+RUN sudo echo "export PATH=$PATH:/opt/wkhtmltox/bin" >> /etc/profile.d/wk.sh
+RUN npm install wkhtmltopdf
+# u need to install fonts for chinese pdf support
+#scp /Library/Fonts/*.ttf toserver
 ```
 
 

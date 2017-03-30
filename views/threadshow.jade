@@ -11,10 +11,10 @@ block content
 
   h1= title
   if (public=='pregen')
-    p 
-      | 點此列印標籤＊
+    p 點此列印標籤＊
       a(href="/thread/#{_id}/printA4QRCode") A4純條碼
-      | 遺失管理標籤？ 請
+    p 想要使用ibon列印功能？請先編輯並填寫email喔
+    p 遺失管理標籤？ 請
       a(href="https://www.facebook.com/profile.php?id=100005461480349") 發個訊息給我
   else
     div(style="border-width:3px;border-style:dashed;border-color:#FFAC55;padding:5px;min-height:190px;")
@@ -34,6 +34,10 @@ block content
       a(href="/thread/#{_id}/printA4Detail") A4帶說明
       | ＊
       a(href="/thread/#{_id}/printA4QRCode") A4純條碼
+    p ibon列印（會寄到你的信箱） 
+      a(href="#{ibon_qronly}") A4純條碼 
+      | ＊
+      a(href="#{ibon_detail}") A4帶說明
     p 酒譜：
     textarea(type="text", style="width:800px;height:100px;") #{recipe} 
     p

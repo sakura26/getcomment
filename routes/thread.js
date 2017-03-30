@@ -122,10 +122,12 @@ createEmpty = function(req, res) {
 	  if (err) return console.error(err);
 	  var editurl = siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass;
 	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  var ibonQRurl = siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode';
+	  var ibon_pregen = siteHost+'/thread/'+thisthread._id+'/cloudPrintPregen/'+thisthread.pass;
 	  	QRCode.toDataURL(editurl,function(err, qrcode_edit){
 			QRCode.toDataURL(viewurl,function(err, qrcode){
 				loglog("prelocateThread "+thisthread._id,"INFO");
-				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl, url_show: viewurl});
+				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl, url_show: viewurl, ibon_qronly: ibonQRurl, ibon_pregen: ibon_pregen});
 			});
 		});
 	});
@@ -263,6 +265,8 @@ router.get('/:id/show', function(req, res) {
   		});
   		qq.avgScore = sum/comments.length ;//calc average rank
   		qq.avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
+  		qq.ibon_qronly = siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode';
+  		qq.ibon_detail = siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail';
   		resolve();
 	  } ); }) );
 	  Promise.all(ress).then(function() {
@@ -301,9 +305,154 @@ router.get('/:id/printA4Detail', function(req, res) {
 });
 router.get('/:id/printA4QRCode', function(req, res) {
 	//var qr;
-	QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){
+	var url = siteHost+'/thread/'+req.params.id+'/show';
+	QRCode.toDataURL(url,function(err, qrcode){
 		///qr.qrcode = qrcode;
-		res.render('printA4QRCode', {qrcode: qrcode});
+		res.render('printA4QRCode', {qrcode: qrcode, url:url});
+	});
+});
+router.get('/:id/printPregen/:pass', function(req, res) {
+	  var editurl = siteHost+'/thread/'+req.params.id+'/edit/'+req.params.pass;
+	  var viewurl = siteHost+'/thread/'+req.params.id+'/show';
+	  var ibonQRurl = siteHost+'/thread/'+req.params.id+'/cloudPrintQRCode';
+	  var ibon_pregen = siteHost+'/thread/'+req.params.id+'/cloudPrintPregen/'+req.params.pass;
+	  	QRCode.toDataURL(editurl,function(err, qrcode_edit){
+			QRCode.toDataURL(viewurl,function(err, qrcode){
+				//loglog("prelocateThread "+thisthread._id,"INFO");
+				res.render('preGenCode', {qrcode: qrcode, qrcode_edit: qrcode_edit, url_edit: editurl, url_show: viewurl, ibon_qronly: ibonQRurl, ibon_pregen: ibon_pregen});
+			});
+		});
+});
+//var jade = require('jade');
+//var pdf = require('html-pdf');
+//var request = require('request');
+var fs = require('fs');
+var wkhtmltopdf = require('wkhtmltopdf');
+router.get('/:id/cloudPrintDetail', function(req, res) {
+	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
+	  if (err){
+	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
+	    return;
+	  } 
+	  if (nov(thisthread)){
+		res.writeHead( 404, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
+	    return;
+	  }
+	  var qq = thisthread.toObject();
+	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+
+	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4Detail', { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
+		var exec = require('child_process').exec;
+		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
+		loglog("cli:"+cli,"DEBUG")
+		exec(cli, function callback(error, stdout, stderr){
+			if (error)
+				loglog(error,"ERROR");
+		    //loglog(stdout,"DEBUG");
+		    res.end("ibon request sent, please check your email to find pickup serial number.");
+		});
+	});
+});
+router.get('/:id/cloudPrintQRCode', function(req, res) {
+	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
+	  if (err){
+	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
+	    return;
+	  } 
+	  if (nov(thisthread)){
+		res.writeHead( 404, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
+	    return;
+	  }
+	  var qq = thisthread.toObject();
+	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+
+	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4QRCode', { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
+		var exec = require('child_process').exec;
+		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
+		loglog("cli:"+cli,"DEBUG")
+		exec(cli, function callback(error, stdout, stderr){
+			if (error)
+				loglog(error,"ERROR");
+		    //loglog(stdout,"DEBUG");
+		    res.end("ibon request sent, please check your email to find pickup serial number.");
+		});
+	});
+	//wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4QRCode', { pageSize: 'A4' }).pipe(res);
+	//wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4Detail', { pageSize: 'A4' }).pipe(res);
+/*	var thisthread = new Thread();//mongoose.model('Thread');
+	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
+	  if (err){
+	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
+	    return;
+	  } 
+	  if (nov(thisthread)){
+		res.writeHead( 404, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
+	    return;
+	  }
+	  var qq = thisthread.toObject();
+	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  var ress = [];
+	  //gen QRCode
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(viewurl,function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
+	  Promise.all(ress).then(function() {
+	  	//loglog(JSON.stringify(qq));
+ 		jade.renderFile('views/cloudA4QRCode.jade', {qrcode: qq.qrcode, url:viewurl}, function(error, html){
+			if (error)
+				loglog(error, "ERROR");
+			//loglog(html, "DEBUG");
+			var config=config = {
+			    //"height": "297mm", 
+			    "width": "210mm",            // allowed units: mm, cm, in, px 
+			  "border": "0"             // default is 0, units: mm, cm, in, px 
+			  //"zoomFactor": "0.75" // default is 1 
+			};
+			pdf.create(html, config).toFile(function(err, res){
+			  console.log(res.filename);
+			});
+			res.end(html);
+		});
+	  });
+	});*/
+});
+router.get('/:id/cloudPrintPregen/:pass', function(req, res) {
+	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
+	  if (err){
+	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
+	    return;
+	  } 
+	  if (nov(thisthread)){
+		res.writeHead( 404, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
+	    return;
+	  }
+	  var qq = thisthread.toObject();
+	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+
+	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printPregen/'+req.params.pass, { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
+		var exec = require('child_process').exec;
+		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
+		loglog("cli:"+cli,"DEBUG")
+		exec(cli, function callback(error, stdout, stderr){
+			if (error)
+				loglog(error,"ERROR");
+		    //loglog(stdout,"DEBUG");
+		    res.end("ibon request sent, please check your email to find pickup serial number.");
+		});
 	});
 });
 
