@@ -344,9 +344,12 @@ router.get('/:id/cloudPrintDetail', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
 	  qq.url_show = viewurl;
+	  var wkUrl = siteHost+'/thread/'+req.params.id+'/printA4Detail';
+	  var wkFile='/tmp/'+req.params.id+".pdf";
+	  loglog("wkUrl:"+wkUrl,"DEBUG");
 
-	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4Detail', { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
-		var exec = require('child_process').exec;
+	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
+	  	var exec = require('child_process').exec;
 		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
 		loglog("cli:"+cli,"DEBUG")
 		exec(cli, function callback(error, stdout, stderr){
@@ -355,6 +358,7 @@ router.get('/:id/cloudPrintDetail', function(req, res) {
 		    //loglog(stdout,"DEBUG");
 		    res.end("ibon request sent, please check your email to find pickup serial number.");
 		});
+	  });
 	});
 });
 router.get('/:id/cloudPrintQRCode', function(req, res) {
@@ -373,9 +377,12 @@ router.get('/:id/cloudPrintQRCode', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
 	  qq.url_show = viewurl;
+	  var wkUrl=siteHost+'/thread/'+req.params.id+'/printA4QRCode';
+	  var wkFile='/tmp/'+req.params.id+".pdf";
+	  loglog("wkUrl:"+wkUrl,"DEBUG");
 
-	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4QRCode', { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
-		var exec = require('child_process').exec;
+	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
+	  	var exec = require('child_process').exec;
 		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
 		loglog("cli:"+cli,"DEBUG")
 		exec(cli, function callback(error, stdout, stderr){
@@ -384,6 +391,8 @@ router.get('/:id/cloudPrintQRCode', function(req, res) {
 		    //loglog(stdout,"DEBUG");
 		    res.end("ibon request sent, please check your email to find pickup serial number.");
 		});
+	  });
+
 	});
 	//wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4QRCode', { pageSize: 'A4' }).pipe(res);
 	//wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printA4Detail', { pageSize: 'A4' }).pipe(res);
