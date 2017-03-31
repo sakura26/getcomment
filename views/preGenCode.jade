@@ -7,12 +7,16 @@ html
       div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
         img(src="#{qrcode_edit}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
-          p 管理用標籤，別不小心貼出去囉｜酒發出去之前要記得先上來填寫說明｜列印時要留意是否防水，免得酒冰完字都糊掉了｜想要使用ibon列印功能請先填寫email
-          p 編輯
-            a(href="#{url_edit}") #{url_edit}
-            br
-            | 評分
-            a(href="#{url_show}") #{url_show}
+          form(action="#{ibon_pregen}", method="post")
+            | 管理用標籤，別不小心貼出去囉｜記得先上來填寫說明｜留意是否防水，免得酒冰完字都糊掉了｜ibon列印
+            input(name="email") 
+            input(type="submit", value="送出")
+          br
+          | 編輯
+          a(href="#{url_edit}") #{url_edit}
+          br
+          | 評分
+          a(href="#{url_show}") #{url_show}
       img(src="#{qrcode}")
       img(src="#{qrcode}")
       img(src="#{qrcode}")

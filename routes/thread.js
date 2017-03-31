@@ -435,7 +435,7 @@ router.get('/:id/cloudPrintQRCode', function(req, res) {
 	  });
 	});*/
 });
-router.get('/:id/cloudPrintPregen/:pass', function(req, res) {
+router.post('/:id/cloudPrintPregen/:pass', function(req, res) {
 	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
 	  if (err){
 	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
@@ -454,7 +454,7 @@ router.get('/:id/cloudPrintPregen/:pass', function(req, res) {
 
 	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printPregen/'+req.params.pass, { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
 		var exec = require('child_process').exec;
-		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
+		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+req.body.email;
 		loglog("cli:"+cli,"DEBUG")
 		exec(cli, function callback(error, stdout, stderr){
 			if (error)
