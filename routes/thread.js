@@ -191,49 +191,61 @@ router.post('/addThread', function(req, res) {
 	//    clearComment = clearComment.replace(/\n$/, '<br>');
 	var WTF1=genRandomString(5);
 	var WTF2=Date.now();
-	var thisthread = new Thread( {
-		nickname: xssFilters.inHTMLData(req.body.nickname), 
-		title: xssFilters.inHTMLData(req.body.title), 
-		ownerSaid: clearComment,
-		tags: xssFilters.inHTMLData(req.body.tags), 
-		email: xssFilters.inHTMLData(req.body.email), 
-		defaultResponse: xssFilters.inHTMLData(req.body.defaultResponse), 
-		public: xssFilters.inHTMLData(req.body.public), 
-	  	recipe: xssFilters.inHTMLData(req.body.recipe), 
-	  	style: xssFilters.inHTMLData(req.body.style), 
-	  	image_url: xssFilters.inHTMLData(req.body.image_url), 
-		pass: WTF1, 
-		created_at: WTF2} );//mongoose.model('Thread');
-	thisthread.save(function (err, fluffy) {
-	  if (err) return console.error(err);
-	  res.redirect("/thread/"+thisthread._id+"/show");
-	});
-	loglog("addThread "+thisthread._id,"INFO");
+	if (req.body.email.match(/^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_\.]+[a-zA-Z0-9]+$/g)==null){ 
+		//bad email format
+		//loglog("addThread Fail: bad email: "+req.body.email,"INFO");
+		res.render('errormsg', {error: 'Bad Email format: '+req.body.email});
+		return;
+	}else if (req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
+		//bad URL format
+		//loglog("addThread Fail: bad image_url: "+req.body.image_url,"INFO");
+		res.render('errormsg', {error: 'Bad URL format: '+req.body.image_url});
+		return;
+	}else{
+		var thisthread = new Thread( {
+			nickname: xssFilters.inHTMLData(req.body.nickname), 
+			title: xssFilters.inHTMLData(req.body.title), 
+			ownerSaid: clearComment,
+			tags: xssFilters.inHTMLData(req.body.tags), 
+			email: xssFilters.inHTMLData(req.body.email), 
+			defaultResponse: xssFilters.inHTMLData(req.body.defaultResponse), 
+			public: xssFilters.inHTMLData(req.body.public), 
+		  	recipe: xssFilters.inHTMLData(req.body.recipe), 
+		  	style: xssFilters.inHTMLData(req.body.style), 
+		  	image_url: xssFilters.inHTMLData(req.body.image_url), 
+			pass: WTF1, 
+			created_at: WTF2} );//mongoose.model('Thread');
+		thisthread.save(function (err, fluffy) {
+		  if (err) return console.error(err);
+		  res.redirect("/thread/"+thisthread._id+"/show");
+		});
+		loglog("addThread "+thisthread._id,"INFO");
 
-	var mailOptions = {
-	    from: siteEmail, // sender address
-	    to: req.body.email, // list of receivers
-	    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
-	    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
-	    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
-	    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
-	    	' \n'+
-	    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail \n'+
-	    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
-	    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
-	    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
-	    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
-	    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-	};
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        loglog("addThread failed to send mail to user: "+error,"ERROR");
-	        //res.json({yo: 'error'});
-	    }else{
-	        //console.log('Message sent: ' + info.response);
-	        //res.json({yo: info.response});
-	    };
-	});
+		var mailOptions = {
+		    from: siteEmail, // sender address
+		    to: req.body.email, // list of receivers
+		    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
+		    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
+		    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
+		    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
+		    	' \n'+
+		    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail \n'+
+		    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
+		    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
+		    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
+		    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
+		    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+		};
+		transporter.sendMail(mailOptions, function(error, info){
+		    if(error){
+		        loglog("addThread failed to send mail to user: "+error,"ERROR");
+		        //res.json({yo: 'error'});
+		    }else{
+		        //console.log('Message sent: ' + info.response);
+		        //res.json({yo: info.response});
+		    };
+		});
+	}
 	return;
 });
 
@@ -532,54 +544,65 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  	res.end("password not match");
 	  	return;
 	  }
-	  if (data.public=="pregen"){
-	  	data.created_at = Date.now();
-	  	pregen = true;
-	  }
-	  data.updated_at = Date.now();
-	  data.title = xssFilters.inHTMLData(req.body.title);
-	  data.nickname = xssFilters.inHTMLData(req.body.nickname);
-	  data.ownerSaid = xssFilters.inHTMLData(req.body.ownerSaid);
-	  data.tags = xssFilters.inHTMLData(req.body.tags);
-	  data.defaultResponse = xssFilters.inHTMLData(req.body.defaultResponse);
-	  data.public = xssFilters.inHTMLData(req.body.public);
-	  data.email = xssFilters.inHTMLData(req.body.email);
-	  data.image_url = xssFilters.inHTMLData(req.body.image_url);
-	  data.style = xssFilters.inHTMLData(req.body.style);
-	  data.recipe = xssFilters.inHTMLData(req.body.recipe);
-	  //data.created_at = Date.now();
-	  data.save(function (err, updatedTank) {
-	    if (err) return loglog(err);
-	    //res.send(updatedTank);
-	  });
+		if (req.body.email.match(/^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_\.]+[a-zA-Z0-9]+$/g)==null){ 
+			//bad email format
+			//loglog("addThread Fail: bad email: "+req.body.email,"INFO");
+			res.render('errormsg', {error: 'Bad Email format: '+req.body.email});
+			return;
+		}else if (req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
+			//bad URL format
+			//loglog("addThread Fail: bad image_url: "+req.body.image_url,"INFO");
+			res.render('errormsg', {error: 'Bad URL format: '+req.body.image_url});
+			return;
+		}else{
+		  if (data.public=="pregen"){
+		  	data.created_at = Date.now();
+		  	pregen = true;
+		  }
+		  data.updated_at = Date.now();
+		  data.title = xssFilters.inHTMLData(req.body.title);
+		  data.nickname = xssFilters.inHTMLData(req.body.nickname);
+		  data.ownerSaid = xssFilters.inHTMLData(req.body.ownerSaid);
+		  data.tags = xssFilters.inHTMLData(req.body.tags);
+		  data.defaultResponse = xssFilters.inHTMLData(req.body.defaultResponse);
+		  data.public = xssFilters.inHTMLData(req.body.public);
+		  data.email = xssFilters.inHTMLData(req.body.email);
+		  data.image_url = xssFilters.inHTMLData(req.body.image_url);
+		  data.style = xssFilters.inHTMLData(req.body.style);
+		  data.recipe = xssFilters.inHTMLData(req.body.recipe);
+		  //data.created_at = Date.now();
+		  data.save(function (err, updatedTank) {
+		    if (err) return loglog(err);
+		    //res.send(updatedTank);
+		  });
 
-	  if (pregen){
-		var mailOptions = {
-		    from: siteEmail, // sender address
-		    to: req.body.email, // list of receivers
-		    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
-		    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
-		    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
-		    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
-		    	' \n'+
-		    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
-		    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
-		    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
-		    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
-		    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
-		    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-		};
-		transporter.sendMail(mailOptions, function(error, info){
-		    if(error){
-		        loglog("addThread failed to send mail to user: "+error,"ERROR");
-		        //res.json({yo: 'error'});
-		    }else{
-		        //console.log('Message sent: ' + info.response);
-		        //res.json({yo: info.response});
-		    };
-		});
-	  }
-
+		  if (pregen){
+			var mailOptions = {
+			    from: siteEmail, // sender address
+			    to: req.body.email, // list of receivers
+			    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
+			    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
+			    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
+			    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
+			    	' \n'+
+			    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
+			    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
+			    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
+			    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
+			    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
+			    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+			};
+			transporter.sendMail(mailOptions, function(error, info){
+			    if(error){
+			        loglog("addThread failed to send mail to user: "+error,"ERROR");
+			        //res.json({yo: 'error'});
+			    }else{
+			        //console.log('Message sent: ' + info.response);
+			        //res.json({yo: info.response});
+			    };
+			});
+		  }
+		}
 	  res.redirect("/thread/"+req.params.id+"/show");
 	})
 });

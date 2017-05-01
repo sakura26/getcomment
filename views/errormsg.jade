@@ -1,0 +1,9 @@
+extends layout
+block content
+  section(id="one")
+    div(class="inner")
+      header
+        h2 OOPS
+      p 發生錯誤囉，請稍候
+        a(href="javascript:history.back()") 再試一次
+      p= error
