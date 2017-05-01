@@ -147,7 +147,9 @@ block content
           textarea(name="defaultResponse" rows="6") #{defaultResponse}
         div(class="field first")
           label(for="public") 公開顯示
-          checkbox(name="public" value="yes" checked)
+          select#public(name='public')
+            option(value='yes' selected) Yes
+            option(value='no') No
         ul(class="actions")
           li
             input(type="submit" value="→更新" class="alt")

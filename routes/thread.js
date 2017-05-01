@@ -135,7 +135,7 @@ createEmpty = function(req, res) {
 		});
 	});
 }
-
+/*
 router.post('/', function(req, res) {
 	//TODO: validate email!
 	//TODO: send notify email!
@@ -182,7 +182,7 @@ router.post('/', function(req, res) {
 	    };
 	});
 	return thisthread._id;
-});
+});*/
 router.post('/addThread', function(req, res) {
 	//TODO: validate email!
 	//TODO: send notify email!
@@ -218,7 +218,7 @@ router.post('/addThread', function(req, res) {
 	    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
 	    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
 	    	' \n'+
-	    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
+	    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail \n'+
 	    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
 	    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
 	    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
@@ -537,16 +537,16 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  	pregen = true;
 	  }
 	  data.updated_at = Date.now();
-	  data.title = req.body.title;
-	  data.nickname = req.body.nickname;
-	  data.ownerSaid = req.body.ownerSaid;
-	  data.tags = req.body.tags;
-	  data.defaultResponse = req.body.defaultResponse;
-	  data.public = req.body.public;
-	  data.email = req.body.email;
-	  data.image_url = req.body.image_url;
-	  data.style = req.body.style;
-	  data.recipe = req.body.recipe;
+	  data.title = xssFilters.inHTMLData(req.body.title);
+	  data.nickname = xssFilters.inHTMLData(req.body.nickname);
+	  data.ownerSaid = xssFilters.inHTMLData(req.body.ownerSaid);
+	  data.tags = xssFilters.inHTMLData(req.body.tags);
+	  data.defaultResponse = xssFilters.inHTMLData(req.body.defaultResponse);
+	  data.public = xssFilters.inHTMLData(req.body.public);
+	  data.email = xssFilters.inHTMLData(req.body.email);
+	  data.image_url = xssFilters.inHTMLData(req.body.image_url);
+	  data.style = xssFilters.inHTMLData(req.body.style);
+	  data.recipe = xssFilters.inHTMLData(req.body.recipe);
 	  //data.created_at = Date.now();
 	  data.save(function (err, updatedTank) {
 	    if (err) return loglog(err);
@@ -583,6 +583,7 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  res.redirect("/thread/"+req.params.id+"/show");
 	})
 });
+/*
 router.put('/:id/:pass', function(req, res) {
 	//TOOD: validate owner!
 	loglog("updThread "+req.params.id,"INFO");
@@ -619,7 +620,7 @@ router.put('/:id/:pass', function(req, res) {
 	  });
 	  res.redirect("/thread/"+req.params.id+"/show");
 	})
-});
+});*/
 router.delete('/:id', function(req, res) {
 	//TOOD: validate owner!
 	loglog("delThread "+req.params.id,"INFO");
