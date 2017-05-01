@@ -14,9 +14,9 @@ block content
         header
           h2 本標籤尚未填寫內容
         p 點此列印標籤＊
-          a(href="/thread/#{_id}/printA4QRCode") A4純條碼
+          a(target="_blank" href="/thread/#{_id}/printA4QRCode") A4純條碼
         p 遺失管理標籤？ 請
-          a(href="https://www.facebook.com/profile.php?id=100005461480349") 發個訊息給我
+          a(target="_blank" href="https://www.facebook.com/profile.php?id=100005461480349") 發個訊息給我
   else
     section#main
       div(class="inner")
@@ -65,7 +65,7 @@ block content
               label(for="response") 想法與反饋
               textarea(name="response" rows="6") #{defaultResponse}
             div(class="field")
-              label(for="bjcppass") BJCP密碼（選填，若您有BJCP身份且願意提供專業評量，請與我們聯繫）
+              label(for="bjcppass") BJCP評審代碼（選填，若您有BJCP身份且願意提供專業評量，請與我們聯繫）
               input(type="password", name="bjcppass")
             ul(class="actions")
               li
