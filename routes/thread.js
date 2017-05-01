@@ -50,7 +50,8 @@ var BJCPer = mongoose.model( 'BJCPer', BJCPerSchema );
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-	var thisthread = new Thread();
+	res.redirect("/");
+	/*var thisthread = new Thread();
 	Thread.find(function (err, data) {
 	  if (err){
 	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
@@ -59,7 +60,7 @@ router.get('/', function(req, res) {
 	  } 
 	  res.writeHead( 201, {'Content-Type' : 'text/plain'});
 	  res.end(JSON.stringify(data));
-	})
+	})*/
 });
 
 router.get('/:id', function(req, res) {
@@ -67,7 +68,8 @@ router.get('/:id', function(req, res) {
 		createEmpty(req, res);
 		return;
 	}
-	var thisthread = new Thread();//mongoose.model('Thread');
+	res.redirect("/thread/"+req.params.id+"/show");
+/*	var thisthread = new Thread();//mongoose.model('Thread');
 	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
 	  if (err){
 	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
@@ -81,7 +83,6 @@ router.get('/:id', function(req, res) {
 	  }
 	  var qq = thisthread.toObject();
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
-	  delete qq.pass;
 	  var ress = [];
 	  //gen QRCode
 	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
@@ -92,7 +93,10 @@ router.get('/:id', function(req, res) {
   		//calc avgRank
   		var sum=0, bjcpsum=0, bjcpcount=0;
   		comments.forEach(function(ele){ 
-  			ele.bjcppass = "masked";
+  			if (typeof(ele.bjcppass) != 'undefined' && ele.bjcppass!=null)
+  				ele.bjcppass = "masked";
+  			else
+  				delete ele.bjcppass;
   			sum+=ele.score; 
   			if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){
   				bjcpcount++; 
@@ -105,17 +109,16 @@ router.get('/:id', function(req, res) {
 	  } ); }) );
 	  Promise.all(ress).then(function() {
 	  	res.writeHead( 201, {'Content-Type' : 'text/plain'});
+	    delete qq.pass;  //TODO FIXME
 		res.end(JSON.stringify(qq));
 	  });
-	});
+	});*/
 });
 
 createEmpty = function(req, res) {
-	//TODO: validate email!
-	//TODO: send notify email!
 	var thisthread = new Thread( {
 		public: 'pregen', 
-		title: 'This tag is not set yet~ ',
+		title: 'not set yet',
 		created_at: Date.now(),
 		pass: genRandomString(5)} );//mongoose.model('Thread');
 	thisthread.save(function (err, fluffy) {
@@ -214,7 +217,12 @@ router.post('/addThread', function(req, res) {
 	    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
 	    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
 	    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
-	    	'QRCode: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
+	    	' \n'+
+	    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
+	    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
+	    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
+	    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
+	    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
 	    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
 	};
 	transporter.sendMail(mailOptions, function(error, info){
@@ -256,7 +264,10 @@ router.get('/:id/show', function(req, res) {
   		//calc avgRank
   		var sum=0, bjcpsum=0, bjcpcount=0;
   		comments.forEach(function(ele){ 
-  			ele.bjcppass = "masked";
+  			if (typeof(ele.bjcppass) != 'undefined' && ele.bjcppass!=null)
+  				ele.bjcppass = "masked";
+  			else
+  				delete ele.bjcppass;
   			sum+=ele.score; 
   			if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){
   				bjcpcount++; 
@@ -508,6 +519,7 @@ router.get('/:id/edit/:pass', function(req, res) {
 router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	//TOOD: validate owner!
 	loglog("updThread "+req.params.id,"INFO");
+	var pregen=false;
 
 	//var thisthread = new Thread();//mongoose.model('Thread');
 	Thread.findById(req.params.id, function (err, data) {
@@ -522,6 +534,7 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  }
 	  if (data.public=="pregen"){
 	  	data.created_at = Date.now();
+	  	pregen = true;
 	  }
 	  data.updated_at = Date.now();
 	  data.title = req.body.title;
@@ -539,6 +552,34 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	    if (err) return loglog(err);
 	    //res.send(updatedTank);
 	  });
+
+	  if (pregen){
+		var mailOptions = {
+		    from: siteEmail, // sender address
+		    to: req.body.email, // list of receivers
+		    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
+		    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
+		    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
+		    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
+		    	' \n'+
+		    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
+		    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
+		    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
+		    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
+		    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
+		    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+		};
+		transporter.sendMail(mailOptions, function(error, info){
+		    if(error){
+		        loglog("addThread failed to send mail to user: "+error,"ERROR");
+		        //res.json({yo: 'error'});
+		    }else{
+		        //console.log('Message sent: ' + info.response);
+		        //res.json({yo: info.response});
+		    };
+		});
+	  }
+
 	  res.redirect("/thread/"+req.params.id+"/show");
 	})
 });

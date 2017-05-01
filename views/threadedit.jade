@@ -1,153 +1,153 @@
 extends layout
-
 block content
-  h1= title
-  p 修改回應串，如果有什麼寫錯了，可以在這裡編輯喔
-  hr
-  p 建立戳戳樂
-  form(action='/thread/#{_id}/update/#{pass}', method="post")
-    div.input
-      | Nickname暱稱
-      input(type="text", name="nickname" value="#{nickname}") 
-      br
-      | Email通知信箱
-      input(type="text", name="email" value="#{email}") 
-      br
-      | Title主題 
-      input(type="text", name="title" value="#{title}") 
-      br
-      | message你想說的話 
-      textarea(type="text", name="ownerSaid", style="width:600px;height:200px;")  #{ownerSaid}
-      br
-      | recipe酒譜
-      textarea(type="text", name="recipe", style="width:600px;height:200px;")  #{recipe}
-      br
-      | style(BJCP)
-      select(name="style") 
-        option(value="Unknown") Please Select
-        option(value="1. STANDARD AMERICAN BEER") 1. STANDARD AMERICAN BEER
-        option(value="1A. American Light Lager") 1A. American Light Lager
-        option(value="1B. American Lager ") 1B. American Lager 
-        option(value="1C. Cream Ale ") 1C. Cream Ale 
-        option(value="1D. American Wheat Beer") 1D. American Wheat Beer
-        option(value="2. INTERNATIONAL LAGER ") 2. INTERNATIONAL LAGER 
-        option(value="2A. International Pale Lager ") 2A. International Pale Lager 
-        option(value="2B. International Amber Lager ") 2B. International Amber Lager 
-        option(value="2C. International Dark Lager ") 2C. International Dark Lager 
-        option(value="3. CZECH LAGER") 3. CZECH LAGER
-        option(value="3A. Czech Pale Lager ") 3A. Czech Pale Lager 
-        option(value="3B. Czech Premium Pale Lager ") 3B. Czech Premium Pale Lager 
-        option(value="3C. Czech Amber Lager ") 3C. Czech Amber Lager 
-        option(value="3D. Czech Dark Lager") 3D. Czech Dark Lager
-        option(value="4. PALE MALTY EUROPEAN LAGER ") 4. PALE MALTY EUROPEAN LAGER 
-        option(value="4A. Munich Helles ") 4A. Munich Helles 
-        option(value="4B. Festbier") 4B. Festbier
-        option(value="4C. Helles Bock") 4C. Helles Bock
-        option(value="5. PALE BITTER EUROPEAN BEER") 5. PALE BITTER EUROPEAN BEER
-        option(value="5A. German Leichtbier") 5A. German Leichtbier
-        option(value="5B. Kolsch") 5B. Kolsch
-        option(value="5C. German Helles Exportbier ") 5C. German Helles Exportbier 
-        option(value="5D. German Pils ") 5D. German Pils 
-        option(value="6. AMBER MALTY EUROPEAN LAGER") 6. AMBER MALTY EUROPEAN LAGER
-        option(value="6A. Marzen ") 6A. Marzen 
-        option(value="6B. Rauchbier ") 6B. Rauchbier 
-        option(value="6C. Dunkles Bock ") 6C. Dunkles Bock 
-        option(value="7. AMBER BITTER EUROPEAN BEER") 7. AMBER BITTER EUROPEAN BEER
-        option(value="7A. Vienna Lager ") 7A. Vienna Lager 
-        option(value="7B. Altbier") 7B. Altbier
-        option(value="7C. Kellerbier") 7C. Kellerbier
-        option(value="8. DARK EUROPEAN LAGER") 8. DARK EUROPEAN LAGER
-        option(value="8A. Munich Dunkel ") 8A. Munich Dunkel 
-        option(value="8B. Schwarzbier") 8B. Schwarzbier
-        option(value="9. STRONG EUROPEAN BEER") 9. STRONG EUROPEAN BEER
-        option(value="9A. Doppelbock ") 9A. Doppelbock 
-        option(value="9B. Eisbock ") 9B. Eisbock 
-        option(value="9C. Baltic Porter ") 9C. Baltic Porter 
-        option(value="10. GERMAN WHEAT BEER ") 10. GERMAN WHEAT BEER 
-        option(value="10A. Weissbier ") 10A. Weissbier 
-        option(value="10B. Dunkles Weissbier") 10B. Dunkles Weissbier
-        option(value="10C. Weizenbock ") 10C. Weizenbock 
-        option(value="11. BRITISH BITTER") 11. BRITISH BITTER
-        option(value="11A. Ordinary Bitter") 11A. Ordinary Bitter
-        option(value="11B. Best Bitter ") 11B. Best Bitter 
-        option(value="11C. Strong Bitter") 11C. Strong Bitter
-        option(value="12. PALE COMMONWEALTH BEER") 12. PALE COMMONWEALTH BEER
-        option(value="12A. British Golden Ale ") 12A. British Golden Ale 
-        option(value="12B. Australian Sparkling Ale ") 12B. Australian Sparkling Ale 
-        option(value="12C. English IPA") 12C. English IPA
-        option(value="13. BROWN BRITISH BEER ") 13. BROWN BRITISH BEER 
-        option(value="13A. Dark Mild") 13A. Dark Mild
-        option(value="13B. British Brown Ale ") 13B. British Brown Ale 
-        option(value="13C. English Porter") 13C. English Porter
-        option(value="14. SCOTTISH ALE") 14. SCOTTISH ALE
-        option(value="14A. Scottish Light") 14A. Scottish Light
-        option(value="14B. Scottish Heavy") 14B. Scottish Heavy
-        option(value="14C. Scottish Export ") 14C. Scottish Export 
-        option(value="15. IRISH BEER ") 15. IRISH BEER 
-        option(value="15A. Irish Red Ale") 15A. Irish Red Ale
-        option(value="15B. Irish Stout ") 15B. Irish Stout 
-        option(value="15C. Irish Extra Stout ") 15C. Irish Extra Stout 
-        option(value="16. DARK BRITISH BEER ") 16. DARK BRITISH BEER 
-        option(value="16A. Sweet Stout") 16A. Sweet Stout
-        option(value="16B. Oatmeal Stout") 16B. Oatmeal Stout
-        option(value="16C. Tropical Stout ") 16C. Tropical Stout 
-        option(value="16D. Foreign Extra Stout") 16D. Foreign Extra Stout
-        option(value="17. STRONG BRITISH ALE ") 17. STRONG BRITISH ALE 
-        option(value="17A. British Strong Ale ") 17A. British Strong Ale 
-        option(value="17B. Old Ale ") 17B. Old Ale 
-        option(value="17C. Wee Heavy ") 17C. Wee Heavy 
-        option(value="17D. English Barleywine") 17D. English Barleywine
-        option(value="18. PALE AMERICAN ALE") 18. PALE AMERICAN ALE
-        option(value="18A. Blonde Ale ") 18A. Blonde Ale 
-        option(value="18B. American Pale Ale ") 18B. American Pale Ale 
-        option(value="19. AMBER AND BROWN AMERICAN BEER ") 19. AMBER AND BROWN AMERICAN BEER 
-        option(value="19A. American Amber Ale ") 19A. American Amber Ale 
-        option(value="19B. California Common ") 19B. California Common 
-        option(value="19C. American Brown Ale") 19C. American Brown Ale
-        option(value="20. AMERICAN PORTER AND STOUT ") 20. AMERICAN PORTER AND STOUT 
-        option(value="20A. American Porter ") 20A. American Porter 
-        option(value="20B. American Stout ") 20B. American Stout 
-        option(value="20C. Imperial Stout ") 20C. Imperial Stout 
-        option(value="21. IPA") 21. IPA
-        option(value="21A. American IPA ") 21A. American IPA 
-        option(value="21B. Specialty IPA ") 21B. Specialty IPA 
-        option(value="22. STRONG AMERICAN ALE") 22. STRONG AMERICAN ALE
-        option(value="22A. Double IPA") 22A. Double IPA
-        option(value="22B. American Strong Ale") 22B. American Strong Ale
-        option(value="22C. American Barleywine") 22C. American Barleywine
-        option(value="22D. Wheatwine ") 22D. Wheatwine 
-        option(value="23. EUROPEAN SOUR ALE ") 23. EUROPEAN SOUR ALE 
-        option(value="23A. Berliner Weisse ") 23A. Berliner Weisse 
-        option(value="23B. Flanders Red Ale") 23B. Flanders Red Ale
-        option(value="23C. Oud Bruin") 23C. Oud Bruin
-        option(value="23D. Lambic ") 23D. Lambic 
-        option(value="23E. Gueuze") 23E. Gueuze
-        option(value="23F. Fruit Lambic") 23F. Fruit Lambic
-        option(value="24. BELGIAN ALE") 24. BELGIAN ALE
-        option(value="24A. Witbier ") 24A. Witbier 
-        option(value="24B. Belgian Pale Ale ") 24B. Belgian Pale Ale 
-        option(value="24C. Biere de Garde") 24C. Biere de Garde
-        option(value="25. STRONG BELGIAN ALE ") 25. STRONG BELGIAN ALE 
-        option(value="25A. Belgian Blond Ale") 25A. Belgian Blond Ale
-        option(value="25B. Saison ") 25B. Saison 
-        option(value="25C. Belgian Golden Strong Ale") 25C. Belgian Golden Strong Ale
-        option(value="26. TRAPPIST ALE") 26. TRAPPIST ALE
-        option(value="26A. Trappist Single") 26A. Trappist Single
-        option(value="26B. Belgian Dubbel") 26B. Belgian Dubbel
-        option(value="26C. Belgian Tripel") 26C. Belgian Tripel
-        option(value="26D. Belgian Dark Strong Ale ") 26D. Belgian Dark Strong Ale 
-        option(value="27.HISTORICAL BEER") 27.HISTORICAL BEER
-      br
-      | image_url影像網址
-      input(type="text", name="image_url" value="#{image_url}") 
-      br
-      | ResponseTemplate回覆樣本
-      textarea(type="text", name="defaultResponse", style="width:600px;height:200px;") #{defaultResponse}
-      br
-      | Tags標籤 
-      input(type="text", name="tags" value="#{tags}") 
-      br
-      | Public是否公開顯示其他人的意見
-      input(type="checkbox", name="public", value="yes", checked) 
-    div.actions
-      input(type="submit", value="update")
+  section#main
+    div(class="inner")
+      header
+        h2 修改模式 #{title}
+      form(action="/thread/#{_id}/update/#{pass}" method="post")
+        div(class="field half first")
+          label(for="nickname") 暱稱
+          input(type="text" name="nickname" id="nickname" value="#{nickname}")
+        div(class="field half")
+          label(for="email") Email
+          input(type="text" name="email" id="email" value="#{email}")
+        div(class="field half first")
+          label(for="title") 作品名
+          input(type="text" name="title" id="title" value="#{title}")
+        div(class="field half")
+          label(for="image_url") 照片
+          input(type="text" name="image_url" id="image_url" value="#{image_url}")
+        div(class="field half first")
+          label(for="tags") 標籤（逗號分格，方便別人找到你）
+          input(type="text" name="tags" id="tags" value="#{tags}")
+        div(class="field half")
+          label(for="style") Style(BJCP)
+          select#bjcp(name='bjcp')
+            option(value='Unknown') Please Select
+            option(value='1. STANDARD AMERICAN BEER') 1. STANDARD AMERICAN BEER
+            option(value='1A. American Light Lager') 1A. American Light Lager
+            option(value='1B. American Lager ') 1B. American Lager 
+            option(value='1C. Cream Ale ') 1C. Cream Ale 
+            option(value='1D. American Wheat Beer') 1D. American Wheat Beer
+            option(value='2. INTERNATIONAL LAGER ') 2. INTERNATIONAL LAGER 
+            option(value='2A. International Pale Lager ') 2A. International Pale Lager 
+            option(value='2B. International Amber Lager ') 2B. International Amber Lager 
+            option(value='2C. International Dark Lager ') 2C. International Dark Lager 
+            option(value='3. CZECH LAGER') 3. CZECH LAGER
+            option(value='3A. Czech Pale Lager ') 3A. Czech Pale Lager 
+            option(value='3B. Czech Premium Pale Lager ') 3B. Czech Premium Pale Lager 
+            option(value='3C. Czech Amber Lager ') 3C. Czech Amber Lager 
+            option(value='3D. Czech Dark Lager') 3D. Czech Dark Lager
+            option(value='4. PALE MALTY EUROPEAN LAGER ') 4. PALE MALTY EUROPEAN LAGER 
+            option(value='4A. Munich Helles ') 4A. Munich Helles 
+            option(value='4B. Festbier') 4B. Festbier
+            option(value='4C. Helles Bock') 4C. Helles Bock
+            option(value='5. PALE BITTER EUROPEAN BEER') 5. PALE BITTER EUROPEAN BEER
+            option(value='5A. German Leichtbier') 5A. German Leichtbier
+            option(value='5B. Kolsch') 5B. Kolsch
+            option(value='5C. German Helles Exportbier ') 5C. German Helles Exportbier 
+            option(value='5D. German Pils ') 5D. German Pils 
+            option(value='6. AMBER MALTY EUROPEAN LAGER') 6. AMBER MALTY EUROPEAN LAGER
+            option(value='6A. Marzen ') 6A. Marzen 
+            option(value='6B. Rauchbier ') 6B. Rauchbier 
+            option(value='6C. Dunkles Bock ') 6C. Dunkles Bock 
+            option(value='7. AMBER BITTER EUROPEAN BEER') 7. AMBER BITTER EUROPEAN BEER
+            option(value='7A. Vienna Lager ') 7A. Vienna Lager 
+            option(value='7B. Altbier') 7B. Altbier
+            option(value='7C. Kellerbier') 7C. Kellerbier
+            option(value='8. DARK EUROPEAN LAGER') 8. DARK EUROPEAN LAGER
+            option(value='8A. Munich Dunkel ') 8A. Munich Dunkel 
+            option(value='8B. Schwarzbier') 8B. Schwarzbier
+            option(value='9. STRONG EUROPEAN BEER') 9. STRONG EUROPEAN BEER
+            option(value='9A. Doppelbock ') 9A. Doppelbock 
+            option(value='9B. Eisbock ') 9B. Eisbock 
+            option(value='9C. Baltic Porter ') 9C. Baltic Porter 
+            option(value='10. GERMAN WHEAT BEER ') 10. GERMAN WHEAT BEER 
+            option(value='10A. Weissbier ') 10A. Weissbier 
+            option(value='10B. Dunkles Weissbier') 10B. Dunkles Weissbier
+            option(value='10C. Weizenbock ') 10C. Weizenbock 
+            option(value='11. BRITISH BITTER') 11. BRITISH BITTER
+            option(value='11A. Ordinary Bitter') 11A. Ordinary Bitter
+            option(value='11B. Best Bitter ') 11B. Best Bitter 
+            option(value='11C. Strong Bitter') 11C. Strong Bitter
+            option(value='12. PALE COMMONWEALTH BEER') 12. PALE COMMONWEALTH BEER
+            option(value='12A. British Golden Ale ') 12A. British Golden Ale 
+            option(value='12B. Australian Sparkling Ale ') 12B. Australian Sparkling Ale 
+            option(value='12C. English IPA') 12C. English IPA
+            option(value='13. BROWN BRITISH BEER ') 13. BROWN BRITISH BEER 
+            option(value='13A. Dark Mild') 13A. Dark Mild
+            option(value='13B. British Brown Ale ') 13B. British Brown Ale 
+            option(value='13C. English Porter') 13C. English Porter
+            option(value='14. SCOTTISH ALE') 14. SCOTTISH ALE
+            option(value='14A. Scottish Light') 14A. Scottish Light
+            option(value='14B. Scottish Heavy') 14B. Scottish Heavy
+            option(value='14C. Scottish Export ') 14C. Scottish Export 
+            option(value='15. IRISH BEER ') 15. IRISH BEER 
+            option(value='15A. Irish Red Ale') 15A. Irish Red Ale
+            option(value='15B. Irish Stout ') 15B. Irish Stout 
+            option(value='15C. Irish Extra Stout ') 15C. Irish Extra Stout 
+            option(value='16. DARK BRITISH BEER ') 16. DARK BRITISH BEER 
+            option(value='16A. Sweet Stout') 16A. Sweet Stout
+            option(value='16B. Oatmeal Stout') 16B. Oatmeal Stout
+            option(value='16C. Tropical Stout ') 16C. Tropical Stout 
+            option(value='16D. Foreign Extra Stout') 16D. Foreign Extra Stout
+            option(value='17. STRONG BRITISH ALE ') 17. STRONG BRITISH ALE 
+            option(value='17A. British Strong Ale ') 17A. British Strong Ale 
+            option(value='17B. Old Ale ') 17B. Old Ale 
+            option(value='17C. Wee Heavy ') 17C. Wee Heavy 
+            option(value='17D. English Barleywine') 17D. English Barleywine
+            option(value='18. PALE AMERICAN ALE') 18. PALE AMERICAN ALE
+            option(value='18A. Blonde Ale ') 18A. Blonde Ale 
+            option(value='18B. American Pale Ale ') 18B. American Pale Ale 
+            option(value='19. AMBER AND BROWN AMERICAN BEER ') 19. AMBER AND BROWN AMERICAN BEER 
+            option(value='19A. American Amber Ale ') 19A. American Amber Ale 
+            option(value='19B. California Common ') 19B. California Common 
+            option(value='19C. American Brown Ale') 19C. American Brown Ale
+            option(value='20. AMERICAN PORTER AND STOUT ') 20. AMERICAN PORTER AND STOUT 
+            option(value='20A. American Porter ') 20A. American Porter 
+            option(value='20B. American Stout ') 20B. American Stout 
+            option(value='20C. Imperial Stout ') 20C. Imperial Stout 
+            option(value='21. IPA') 21. IPA
+            option(value='21A. American IPA ') 21A. American IPA 
+            option(value='21B. Specialty IPA ') 21B. Specialty IPA 
+            option(value='22. STRONG AMERICAN ALE') 22. STRONG AMERICAN ALE
+            option(value='22A. Double IPA') 22A. Double IPA
+            option(value='22B. American Strong Ale') 22B. American Strong Ale
+            option(value='22C. American Barleywine') 22C. American Barleywine
+            option(value='22D. Wheatwine ') 22D. Wheatwine 
+            option(value='23. EUROPEAN SOUR ALE ') 23. EUROPEAN SOUR ALE 
+            option(value='23A. Berliner Weisse ') 23A. Berliner Weisse 
+            option(value='23B. Flanders Red Ale') 23B. Flanders Red Ale
+            option(value='23C. Oud Bruin') 23C. Oud Bruin
+            option(value='23D. Lambic ') 23D. Lambic 
+            option(value='23E. Gueuze') 23E. Gueuze
+            option(value='23F. Fruit Lambic') 23F. Fruit Lambic
+            option(value='24. BELGIAN ALE') 24. BELGIAN ALE
+            option(value='24A. Witbier ') 24A. Witbier 
+            option(value='24B. Belgian Pale Ale ') 24B. Belgian Pale Ale 
+            option(value='24C. Biere de Garde') 24C. Biere de Garde
+            option(value='25. STRONG BELGIAN ALE ') 25. STRONG BELGIAN ALE 
+            option(value='25A. Belgian Blond Ale') 25A. Belgian Blond Ale
+            option(value='25B. Saison ') 25B. Saison 
+            option(value='25C. Belgian Golden Strong Ale') 25C. Belgian Golden Strong Ale
+            option(value='26. TRAPPIST ALE') 26. TRAPPIST ALE
+            option(value='26A. Trappist Single') 26A. Trappist Single
+            option(value='26B. Belgian Dubbel') 26B. Belgian Dubbel
+            option(value='26C. Belgian Tripel') 26C. Belgian Tripel
+            option(value='26D. Belgian Dark Strong Ale ') 26D. Belgian Dark Strong Ale 
+            option(value='27.HISTORICAL BEER') 27.HISTORICAL BEER
+        div(class="field")
+          label(for="ownerSaid") 對讀者說
+          textarea(name="ownerSaid" rows="6") #{ownerSaid}
+        div(class="field")
+          label(for="recipe") 設計/酒譜
+          textarea(name="recipe" rows="6") #{recipe}
+        div(class="field")
+          label(for="defaultResponse") 預設回應格式
+          textarea(name="defaultResponse" rows="6") #{defaultResponse}
+        div(class="field first")
+          label(for="public") 公開顯示
+          checkbox(name="public" value="yes" checked)
+        ul(class="actions")
+          li
+            input(type="submit" value="→更新" class="alt")
