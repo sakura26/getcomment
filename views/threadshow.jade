@@ -39,7 +39,8 @@ block content
             textarea(name="recipe" rows="6") #{recipe} 
         if (typeof(image_url) != 'undefined' && image_url!=null)
           p
-            img(src="#{image_url}", style="max-width:800px;max-height:600px;width:100%")
+            a(href="#{image_url}")
+              img(src="#{image_url}", style="max-width:800px;max-height:600px;width:100%")
 
     section#comment
       div(class="inner")
