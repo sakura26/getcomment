@@ -39,7 +39,7 @@ block content
             textarea(name="recipe" rows="6") #{recipe} 
         if (typeof(image_url) != 'undefined' && image_url!=null)
           p
-            img(src="#{image_url}", style="max-width:800px;max-height:600px;")
+            img(src="#{image_url}", style="max-width:800px;max-height:600px;width:100%")
 
     section#comment
       div(class="inner")
@@ -55,12 +55,12 @@ block content
               input(type="text" name="email" id="email")
             div(class="field half first")
               label(for="scoreBJCP") BJCP評量（選填）
-              span(id="scoreBJCP") -1不計入評分🐱
               input(type="range", name="scoreBJCP", min="-1", max="50", value="-1", onchange="showScoreBJCP(this.value)", )
+              span(id="scoreBJCP") 🐱(-1不計入評分)
             div(class="field half") 
               label(for="score") 總體評量（0-100）
-              span(id="score") 80
               input(type="range", name="score", min="0", max="100", value="80", onchange="showScore(this.value)")
+              span(id="score") 80
             div(class="field")
               label(for="response") 想法與反饋
               textarea(name="response" rows="6") #{defaultResponse}
