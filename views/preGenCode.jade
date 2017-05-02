@@ -1,39 +1,56 @@
 doctype html
-html
+html(style="padding: 0;margin: 0;")
   head
     title= siteTitle
-  body(style="background-color:#E6E6FA;")
-    div(style="width: 210mm;height: 297mm;background-color:#FFFFFF")
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
-        img(src="#{qrcode_edit}", style="width:175px; float:left;")
-        span(style="display:inline; white-space: pre-line; word-break: break-all;")
-          form(action="#{ibon_pregen}", method="post")
-            | 管理用標籤，別不小心貼出去囉｜記得先上來填寫說明｜留意是否防水，免得酒冰完字都糊掉了｜ibon列印
-            input(name="email") 
-            input(type="submit", value="送出")
-          br
-          | 編輯
-          a(target="_blank" href="#{url_edit}") #{url_edit}
-          br
-          | 評分
-          a(target="_blank" href="#{url_show}") #{url_show}
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
-      img(src="#{qrcode}")
+    style.
+      .page {overflow："hidden"}
+  body(style="background-color:#E6E6FA;padding: 0;margin: 0;")
+    center
+      div(style="width: 210mm;height: 297mm;background-color:#FFFFFF;    display:flex;flex-direction:column;")
+        div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;    display:flex;flex:1;box-sizing: border-box;")
+          img(src="#{qrcode_edit}", style="width:175px; float:left;object-fit: contain;")
+          div(style="display:inline; white-space: pre-line; word-break: break-all;")
+            form(action="#{ibon_pregen}", method="post")
+              p 管理用標籤，別不小心貼出去囉｜記得先上來填寫說明｜留意是否防水，免得酒冰完字都糊掉了｜ibon列印
+                input(name="email") 
+                input(type="submit", value="送出")
+            | 編輯
+            a(target="_blank" href="#{url_edit}") #{url_edit}
+            br
+            | 評分
+            a(target="_blank" href="#{url_show}") #{url_show}
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+        div(style="display:flex;flex:1")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")
+          img(src="#{qrcode}" style="flex:1;object-fit: contain;")

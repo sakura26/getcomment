@@ -1,61 +1,53 @@
 doctype html
-html
+html(style="padding: 0;margin: 0;")
   head
     title= siteTitle
-  body(style="background-color:#E6E6FA;")
-    div(style="width: 210mm;height: 297mm;background-color:#FFFFFF")
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
+    style.
+      .page {overflow："hidden"}
+  body(style="background-color:#E6E6FA;padding: 0;margin: 0;")
+    div(style="width: 210mm;height: 297mm;background-color:#FFFFFF;")
+      div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;min-height:190px;")
         img(src="#{qrcode}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
           b= title
           br
-          i #{nickname} 建立時間: #{created_at}
-          br
-          i= style
+          i #{style} by #{nickname} 建立時間: #{created_at}
           br
           span= ownerSaid
           p= url_show
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
+      div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;min-height:190px;")
         img(src="#{qrcode}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
           b= title
           br
-          i #{nickname} 建立時間: #{created_at}
-          br
-          i= style
+          i #{style} by #{nickname} 建立時間: #{created_at}
           br
           span= ownerSaid
           p= url_show
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
+      div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;min-height:190px;")
         img(src="#{qrcode}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
           b= title
           br
-          i #{nickname} 建立時間: #{created_at}
-          br
-          i= style
+          i #{style} by #{nickname} 建立時間: #{created_at}
           br
           span= ownerSaid
           p= url_show
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
+      div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;min-height:190px;")
         img(src="#{qrcode}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
           b= title
           br
-          i #{nickname} 建立時間: #{created_at}
-          br
-          i= style
+          i #{style} by #{nickname} 建立時間: #{created_at}
           br
           span= ownerSaid
           p= url_show
-      div(style="border-width:3px;border-style:dashed;border-color:#000000;padding:5px;width:190mm;min-height:190px;")
+      div(style="border-width:3px;border-style:dashed;border-color:#000000;width:100%;min-height:190px;")
         img(src="#{qrcode}", style="width:175px; float:left;")
         span(style="display:inline; white-space: pre-line; word-break: break-all;")
           b= title
           br
-          i #{nickname} 建立時間: #{created_at}
-          br
-          i= style
+          i #{style} by #{nickname} 建立時間: #{created_at}
           br
           span= ownerSaid
           p= url_show
