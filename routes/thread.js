@@ -369,18 +369,23 @@ router.get('/:id/cloudPrintDetail', function(req, res) {
 	  qq.url_show = viewurl;
 	  var wkUrl = siteHost+'/thread/'+req.params.id+'/printA4Detail';
 	  var wkFile='/tmp/'+req.params.id+".pdf";
-	  loglog("wkUrl:"+wkUrl,"DEBUG");
+	  loglog("wkUrl:"+wkUrl+" wkFile:"+wkFile,"DEBUG");
 
 	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
-	  	var exec = require('child_process').exec;
-		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
-		loglog("cli:"+cli,"DEBUG")
-		exec(cli, function callback(error, stdout, stderr){
-			if (error)
-				loglog(error,"ERROR");
-		    //loglog(stdout,"DEBUG");
-		    res.end("ibon request sent, please check your email to find pickup serial number.");
-		});
+	  	if (nov(req.query.debug)){
+		  	var exec = require('child_process').exec;
+			var cli = 'bash sendIbon.sh '+req.params.id+" "+wkFile+" "+qq.email;
+			loglog("cli:"+cli,"DEBUG")
+			exec(cli, function callback(error, stdout, stderr){
+				if (error)
+					loglog(error,"ERROR");
+			    //loglog(stdout,"DEBUG");
+			    res.end("ibon request sent, please check your email to find pickup serial number.");
+			});
+		}else{
+			var readStream = fs.createReadStream(wkFile);
+		    readStream.pipe(res);
+		}
 	  });
 	});
 });
@@ -402,18 +407,23 @@ router.get('/:id/cloudPrintQRCode', function(req, res) {
 	  qq.url_show = viewurl;
 	  var wkUrl=siteHost+'/thread/'+req.params.id+'/printA4QRCode';
 	  var wkFile='/tmp/'+req.params.id+".pdf";
-	  loglog("wkUrl:"+wkUrl,"DEBUG");
+	  loglog("wkUrl:"+wkUrl+" wkFile:"+wkFile,"DEBUG");
 
 	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
-	  	var exec = require('child_process').exec;
-		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+qq.email;
-		loglog("cli:"+cli,"DEBUG")
-		exec(cli, function callback(error, stdout, stderr){
-			if (error)
-				loglog(error,"ERROR");
-		    //loglog(stdout,"DEBUG");
-		    res.end("ibon request sent, please check your email to find pickup serial number.");
-		});
+	  	if (nov(req.query.debug)){
+		  	var exec = require('child_process').exec;
+			var cli = 'bash sendIbon.sh '+req.params.id+" "+wkFile+" "+qq.email;
+			loglog("cli:"+cli,"DEBUG")
+			exec(cli, function callback(error, stdout, stderr){
+				if (error)
+					loglog(error,"ERROR");
+			    //loglog(stdout,"DEBUG");
+			    res.end("ibon request sent, please check your email to find pickup serial number.");
+			});
+		}else{
+			var readStream = fs.createReadStream(wkFile);
+		    readStream.pipe(res);
+		}
 	  });
 
 	});
@@ -458,6 +468,33 @@ router.get('/:id/cloudPrintQRCode', function(req, res) {
 	  });
 	});*/
 });
+router.get('/:id/cloudPrintPregen/:pass', function(req, res) {  //for debug usage
+	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
+	  if (err){
+	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
+	    return;
+	  } 
+	  if (nov(thisthread)){
+		res.writeHead( 404, {'Content-Type' : 'text/plain'});
+	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
+	    return;
+	  }
+	  var qq = thisthread.toObject();
+	  qq.created_at = ObjectId(req.params.id).getTimestamp();
+	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
+	  qq.url_show = viewurl;
+	  var wkUrl=siteHost+'/thread/'+req.params.id+'/printPregen/'+req.params.pass;
+	  var wkFile='/tmp/'+req.params.id+".pdf";
+	  loglog("wkUrl:"+wkUrl+" wkFile:"+wkFile,"DEBUG");
+
+	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
+	  //wkhtmltopdf(wkUrl, { pageSize: 'A4' }).pipe(fs.createWriteStream(wkFile));
+			var readStream = fs.createReadStream(wkFile);
+		    readStream.pipe(res);
+	  });
+	});
+});
 router.post('/:id/cloudPrintPregen/:pass', function(req, res) {
 	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
 	  if (err){
@@ -474,17 +511,27 @@ router.post('/:id/cloudPrintPregen/:pass', function(req, res) {
 	  qq.created_at = ObjectId(req.params.id).getTimestamp();
 	  var viewurl = siteHost+'/thread/'+thisthread._id+'/show';
 	  qq.url_show = viewurl;
+	  var wkUrl=siteHost+'/thread/'+req.params.id+'/printPregen/'+req.params.pass;
+	  var wkFile='/tmp/'+req.params.id+".pdf";
+	  loglog("wkUrl:"+wkUrl+" wkFile:"+wkFile,"DEBUG");
 
-	  wkhtmltopdf(siteHost+'/thread/'+req.params.id+'/printPregen/'+req.params.pass, { pageSize: 'A4' }).pipe(fs.createWriteStream('/tmp/'+req.params.id+".pdf"));
-		var exec = require('child_process').exec;
-		var cli = 'bash sendIbon.sh '+req.params.id+" "+'/tmp/'+req.params.id+".pdf"+" "+req.body.email;
-		loglog("cli:"+cli,"DEBUG")
-		exec(cli, function callback(error, stdout, stderr){
-			if (error)
-				loglog(error,"ERROR");
-		    //loglog(stdout,"DEBUG");
-		    res.end("ibon request sent, please check your email to find pickup serial number.");
-		});
+	  wkhtmltopdf(wkUrl, { pageSize: 'A4', output: wkFile }, function(err, stream){
+	  //wkhtmltopdf(wkUrl, { pageSize: 'A4' }).pipe(fs.createWriteStream(wkFile));
+	  	if (nov(req.query.debug)){
+			var exec = require('child_process').exec;
+			var cli = 'bash sendIbon.sh '+req.params.id+" "+wkFile+" "+req.body.email;
+			loglog("cli:"+cli,"DEBUG")
+			exec(cli, function callback(error, stdout, stderr){
+				if (error)
+					loglog(error,"ERROR");
+			    //loglog(stdout,"DEBUG");
+			    res.end("ibon request sent, please check your email to find pickup serial number.");
+			});
+		}else{
+			var readStream = fs.createReadStream(wkFile);
+		    readStream.pipe(res);
+		}
+	  });
 	});
 });
 
@@ -544,12 +591,14 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 	  	res.end("password not match");
 	  	return;
 	  }
+	  if (req.body.image_url=='undefined')
+	  	req.body.image_url=null;
 		if (req.body.email.match(/^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_\.]+[a-zA-Z0-9]+$/g)==null){ 
 			//bad email format
 			//loglog("addThread Fail: bad email: "+req.body.email,"INFO");
 			res.render('errormsg', {error: 'Bad Email format: '+req.body.email});
 			return;
-		}else if (req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
+		}else if (!nov(req.body.image_url) && req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
 			//bad URL format
 			//loglog("addThread Fail: bad image_url: "+req.body.image_url,"INFO");
 			res.render('errormsg', {error: 'Bad URL format: '+req.body.image_url});
@@ -581,15 +630,15 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 			    from: siteEmail, // sender address
 			    to: req.body.email, // list of receivers
 			    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
-			    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
-			    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
-			    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
+			    text: 'Thread main page: '+siteHost+'/thread/'+data._id+'/show \n'+ //, // plaintext body
+			    	'edit: '+siteHost+'/thread/'+data._id+'/edit/'+data.pass+' \n'+
+			    	'delete: '+siteHost+'/thread/'+data._id+'/delete/'+data.pass+' \n'+
 			    	' \n'+
-			    	'Print labels: '+siteHost+'/thread/'+thisthread._id+'/printA4Detail'+' \n'+
-			    	'Print QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/printA4QRCode'+' \n'+
-			    	'7-11 ibon labels: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintDetail'+' \n'+
-			    	'7-11 QRCode stickers: '+siteHost+'/thread/'+thisthread._id+'/cloudPrintQRCode'+' \n'+
-			    	'QRCode only: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
+			    	'Print labels: '+siteHost+'/thread/'+data._id+'/printA4Detail'+' \n'+
+			    	'Print QRCode stickers: '+siteHost+'/thread/'+data._id+'/printA4QRCode'+' \n'+
+			    	'7-11 ibon labels: '+siteHost+'/thread/'+data._id+'/cloudPrintDetail'+' \n'+
+			    	'7-11 QRCode stickers: '+siteHost+'/thread/'+data._id+'/cloudPrintQRCode'+' \n'+
+			    	'QRCode only: '+siteHost+'/thread/'+data._id+'/qrcode'
 			    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
 			};
 			transporter.sendMail(mailOptions, function(error, info){

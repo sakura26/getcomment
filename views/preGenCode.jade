@@ -14,10 +14,8 @@ html(style="padding: 0;margin: 0;")
               p 管理用標籤，別不小心貼出去囉｜記得先上來填寫說明｜留意是否防水，免得酒冰完字都糊掉了｜ibon列印
                 input(name="email") 
                 input(type="submit", value="送出")
-            | 編輯
             a(target="_blank" href="#{url_edit}") #{url_edit}
             br
-            | 評分
             a(target="_blank" href="#{url_show}") #{url_show}
         div(style="display:flex;flex:1")
           img(src="#{qrcode}" style="flex:1;object-fit: contain;")
