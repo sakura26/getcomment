@@ -503,8 +503,26 @@ router.get('/:id/edit/:pass', function(req, res) {
 	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
 	    return;
 	  }
-	  if (req.params.pass == data.pass)
-	  	res.render('threadedit', data);
+	  if (req.params.pass == data.pass){
+	  	var qq = data.toObject();
+	  	if (nov(qq.nickname))
+	  		qq.nickname = '';
+	  	if (nov(qq.email))
+	  		qq.email = '';
+	  	if (nov(qq.title))
+	  		qq.title = '';
+	  	if (nov(qq.image_url))
+	  		qq.image_url = '';
+	  	if (nov(qq.tags))
+	  		qq.tags = '';
+	  	if (nov(qq.ownerSaid))
+	  		qq.ownerSaid = '';
+	  	if (nov(qq.recipe))
+	  		qq.recipe = '';
+	  	if (nov(qq.defaultResponse))
+	  		qq.defaultResponse = '';
+	  	res.render('threadedit', qq);
+	  }
 	  else
 	  	res.end("password not match");
 	})
@@ -533,7 +551,7 @@ router.post('/:id/update/:pass', function(req, res) {  //workaround!
 			//loglog("addThread Fail: bad email: "+req.body.email,"INFO");
 			res.render('errormsg', {error: 'Bad Email format: '+req.body.email});
 			return;
-		}else if (!nov(req.body.image_url) && req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
+		}else if (!nov(req.body.image_url) && req.body.image_url!='' && req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
 			//bad URL format
 			//loglog("addThread Fail: bad image_url: "+req.body.image_url,"INFO");
 			res.render('errormsg', {error: 'Bad URL format: '+req.body.image_url});

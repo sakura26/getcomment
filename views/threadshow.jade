@@ -33,11 +33,11 @@ block content
         p(style="clear:left") 平均評分：#{avgScore} BJCP平均：#{avgScoreBJCP}
           br
           | Tags：#{tags}
-        if (typeof(recipe) != 'undefined' && recipe!=null)
+        if (typeof(recipe) != 'undefined' && recipe!=null && recipe!='null' && recipe!='undefined' && recipe.trim()!='')
           div(class="field")
             label(for="recipe") 設計/酒譜
             textarea(name="recipe" rows="6") #{recipe} 
-        if (typeof(image_url) != 'undefined' && image_url!=null)
+        if (typeof(image_url) != 'undefined' && image_url!=null && image_url!='null' && image_url!='undefined' && image_url.trim()!='')
           p
             a(href="#{image_url}")
               img(src="#{image_url}", style="max-width:800px;max-height:600px;width:100%")
