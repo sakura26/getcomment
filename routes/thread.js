@@ -51,68 +51,19 @@ var BJCPer = mongoose.model( 'BJCPer', BJCPerSchema );
 /* GET users listing. */
 router.get('/', function(req, res) {
 	res.redirect("/");
-	/*var thisthread = new Thread();
-	Thread.find(function (err, data) {
-	  if (err){
-	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
-	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
-	    return;
-	  } 
-	  res.writeHead( 201, {'Content-Type' : 'text/plain'});
-	  res.end(JSON.stringify(data));
-	})*/
 });
 
 router.get('/:id', function(req, res) {
+	loglog('req id: '+req.params.id,'DEBUG');
 	if (req.params.id=='createEmpty'){
 		createEmpty(req, res);
 		return;
 	}
+	if (req.params.id=='addThread'){
+		createThread(req, res);
+		return;
+	}
 	res.redirect("/thread/"+req.params.id+"/show");
-/*	var thisthread = new Thread();//mongoose.model('Thread');
-	Thread.findOne({_id:ObjectId(req.params.id)}, function (err, thisthread) {
-	  if (err){
-	  	res.writeHead( 500, {'Content-Type' : 'text/plain'});
-	    res.end(JSON.stringify({status:"error", msg:"exception:"+err}));
-	    return;
-	  } 
-	  if (nov(thisthread)){
-		res.writeHead( 404, {'Content-Type' : 'text/plain'});
-	    res.end(JSON.stringify({status:"error", msg:"no such thread"}));
-	    return;
-	  }
-	  var qq = thisthread.toObject();
-	  qq.created_at = ObjectId(req.params.id).getTimestamp();
-	  var ress = [];
-	  //gen QRCode
-	  ress.push(new Promise((resolve, reject)=>{  QRCode.toDataURL(siteHost+'/thread/'+req.params.id+'/show',function(err, qrcode){qq.qrcode = qrcode;resolve();}); }) );
-	  ress.push(new Promise((resolve, reject)=>{ Comment.find({threadId:req.params.id}, function(err, comments){
-	  	//get comments
-  		if (thisthread.public=='yes')  //show if public
-  			qq.comments = comments;
-  		//calc avgRank
-  		var sum=0, bjcpsum=0, bjcpcount=0;
-  		comments.forEach(function(ele){ 
-  			if (typeof(ele.bjcppass) != 'undefined' && ele.bjcppass!=null)
-  				ele.bjcppass = "masked";
-  			else
-  				delete ele.bjcppass;
-  			sum+=ele.score; 
-  			if(ele.scoreBJCP>-1 && ele.scoreBJCP<51){
-  				bjcpcount++; 
-  				bjcpsum+=ele.scoreBJCP;
-  			} 
-  		});
-  		qq.avgScore = sum/comments.length ;//calc average rank
-  		qq.avgScoreBJCP = bjcpsum/bjcpcount;//calc average rank
-  		resolve();
-	  } ); }) );
-	  Promise.all(ress).then(function() {
-	  	res.writeHead( 201, {'Content-Type' : 'text/plain'});
-	    delete qq.pass;  //TODO FIXME
-		res.end(JSON.stringify(qq));
-	  });
-	});*/
 });
 
 createEmpty = function(req, res) {
@@ -135,55 +86,14 @@ createEmpty = function(req, res) {
 		});
 	});
 }
-/*
-router.post('/', function(req, res) {
-	//TODO: validate email!
-	//TODO: send notify email!
-	var clearComment = xssFilters.inHTMLData(req.body.ownerSaid);
-	//for (i = 0; i < 5; i++) 
-	//    clearComment = clearComment.replace(/\n$/, '<br>');
-	var WTF1=genRandomString(5);
-	var WTF2=Date.now();
-	var thisthread = new Thread( 
-	  {nickname: xssFilters.inHTMLData(req.body.nickname), 
-	  title: xssFilters.inHTMLData(req.body.title), 
-	  ownerSaid: clearComment, 
-	  tags: xssFilters.inHTMLData(req.body.tags), 
-	  email: xssFilters.inHTMLData(req.body.email), 
-	  defaultResponse: xssFilters.inHTMLData(req.body.defaultResponse), 
-	  recipe: xssFilters.inHTMLData(req.body.recipe), 
-	  style: xssFilters.inHTMLData(req.body.style), 
-	  image_url: xssFilters.inHTMLData(req.body.image_url), 
-	  pass: WTF1, 
-	  created_at: WTF2} );//mongoose.model('Thread');
-	thisthread.save(function (err, fluffy) {
-	  if (err) return console.error(err);
-	  res.writeHead( 201, {'Content-Type' : 'text/plain'});
-	  res.end(JSON.stringify(thisthread));
-	});
-	loglog("addThread "+thisthread._id,"INFO");
-	var mailOptions = {
-	    from: siteEmail, // sender address
-	    to: req.body.email, // list of receivers
-	    subject: 'New getComment "'+req.body.title+'" created! here is your summary...', // Subject line
-	    text: 'Thread main page: '+siteHost+'/thread/'+thisthread._id+'/show \n'+ //, // plaintext body
-	    	'edit: '+siteHost+'/thread/'+thisthread._id+'/edit/'+thisthread.pass+' \n'+
-	    	'delete: '+siteHost+'/thread/'+thisthread._id+'/delete/'+thisthread.pass+' \n'+
-	    	'QRCode: '+siteHost+'/thread/'+thisthread._id+'/qrcode'
-	    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-	};
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        loglog("addThread failed to send mail to user: "+error,"ERROR");
-	        //res.json({yo: 'error'});
-	    }else{
-	        //console.log('Message sent: ' + info.response);
-	        //res.json({yo: info.response});
-	    };
-	});
-	return thisthread._id;
-});*/
+
 router.post('/addThread', function(req, res) {
+	loglog('req addThread ','DEBUG');
+	createThread(req, res);
+});
+
+createThread = function(req, res) {
+//router.post('/addThread', function(req, res) {
 	//TODO: validate email!
 	//TODO: send notify email!
 	var clearComment = xssFilters.inHTMLData(req.body.ownerSaid);
@@ -191,12 +101,14 @@ router.post('/addThread', function(req, res) {
 	//    clearComment = clearComment.replace(/\n$/, '<br>');
 	var WTF1=genRandomString(5);
 	var WTF2=Date.now();
+	if (req.body.image_url=='undefined')
+	  req.body.image_url=null;
 	if (req.body.email.match(/^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_\.]+[a-zA-Z0-9]+$/g)==null){ 
 		//bad email format
 		//loglog("addThread Fail: bad email: "+req.body.email,"INFO");
 		res.render('errormsg', {error: 'Bad Email format: '+req.body.email});
 		return;
-	}else if (req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
+	}else if (!nov(req.body.image_url) && req.body.image_url!='' && req.body.image_url.match(/^([a-zA-Z0-9]+:\/\/)?[-a-zA-Z0-9.@:%\._\+~#=]{2,256}(\/[a-zA-Z0-9-_\.]+)*$/g)==null){ 
 		//bad URL format
 		//loglog("addThread Fail: bad image_url: "+req.body.image_url,"INFO");
 		res.render('errormsg', {error: 'Bad URL format: '+req.body.image_url});
@@ -247,7 +159,7 @@ router.post('/addThread', function(req, res) {
 		});
 	}
 	return;
-});
+};
 
 router.get('/:id/show', function(req, res) {
 	//TOOD: validate owner!
